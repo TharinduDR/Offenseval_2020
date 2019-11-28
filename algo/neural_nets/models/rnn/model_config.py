@@ -1,0 +1,14 @@
+TEMP_DIRECTORY = "temp"
+TRAIN_FILE = "train.tsv"
+TEST_FILE = "test.tsv"
+MODEL_PATH = "temp/model.hdfs"
+EMBEDDING_PATH = '/data/glove/glove.840B.300d.txt'
+MAX_SIZE = None
+MAX_LEN = 70
+SPLIT_RATIO = 0.9
+BATCH_SIZE = 256
+HIDDEN_DIM = 32
+N_LAYERS = 2
+BIDIRECTIONAL = True
+DROPOUT = 0.5
+N_EPOCHS = 7
