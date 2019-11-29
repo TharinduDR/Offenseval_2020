@@ -73,3 +73,6 @@ fabric.properties
 .ipynb_checkpoints/.idea
 .ipynb_checkpoints
 
+data
+*.pyc
+

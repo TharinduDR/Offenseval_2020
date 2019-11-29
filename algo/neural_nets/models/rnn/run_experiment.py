@@ -139,6 +139,7 @@ test_id = [id_variable.vocab.itos[i] for i in test_id]
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
 test["predictions"] = test_pred
 
+# Performing the evaluation
 (tn, fp, fn, tp), accuracy, weighted_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
                                                                                                    'encoded_subtask_a',
                                                                                                    "predictions")
