@@ -11,11 +11,13 @@ from sklearn.preprocessing import LabelEncoder
 from torchtext import data
 from torchtext import vocab
 
+from algo.neural_nets.common.preprocessing import pipeline
 from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE
-from neural_nets.common.run_model import fit, predict, threshold_search
-from neural_nets.common.utility import evaluatation_scores
+from algo.neural_nets.common.run_model import fit, predict, threshold_search
+from algo.neural_nets.common.utility import evaluatation_scores
+
 from project_config import SEED, DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -41,7 +43,7 @@ train.to_csv(os.path.join(TEMP_DIRECTORY, TRAIN_FILE), header=True, sep='\t', in
 test.to_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 id_variable = data.Field()
-text_variable = data.Field(tokenize="spacy")
+text_variable = data.Field(tokenize=pipeline)
 target_variable = data.LabelField(dtype=torch.float)
 
 train_fields = [

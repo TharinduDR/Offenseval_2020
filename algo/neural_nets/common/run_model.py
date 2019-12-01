@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from sklearn.metrics import f1_score
 
-from logginghandler import TQDMLoggingHandler
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
