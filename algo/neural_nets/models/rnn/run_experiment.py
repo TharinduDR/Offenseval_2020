@@ -1,6 +1,7 @@
 import logging
-import random
 import os
+import random
+
 import numpy as np
 import pandas as pd
 import torch
@@ -8,16 +9,17 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
 
 from algo.neural_nets.common.preprocessing import pipeline
-from algo.neural_nets.models.rnn.model import RNN
-from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
-    N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores
-
+from algo.neural_nets.models.rnn.model import RNN
+from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
+    N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
+    REDUCE_LEARNING_RATE_FACTOR
 from project_config import SEED, DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -31,7 +33,7 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-if not os.path.exists(TEMP_DIRECTORY):os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
 full = pd.read_csv(DATA_PATH, sep='\t')
 
@@ -79,67 +81,78 @@ test_data = data.TabularDataset(
     fields=test_fields
 )
 
-train_data, valid_data = train_data.split(split_ratio=SPLIT_RATIO, random_state=random.seed(SEED))
-
-logging.info(f'Number of training examples: {len(train_data)}')
-logging.info(f'Number of validation examples: {len(valid_data)}')
-logging.info(f'Number of test examples: {len(test_data)}')
-
 vec = vocab.Vectors(EMBEDDING_PATH)
 
-# Build the vocabulary using only the train dataset?,
-# and also by specifying the pretrained embedding
-text_variable.build_vocab(train_data, vectors=vec, max_size=None)
-target_variable.build_vocab(train_data)
-id_variable.build_vocab(test_data)
+test_preds = np.zeros((len(test_data), N_FOLD))
+deltas = []
 
-logging.info(f'Unique tokens in TEXT vocab: {len(text_variable.vocab)}')
-logging.info(f'Unique tokens in TARGET vocab: {len(target_variable.vocab)}')
+for i in range(N_FOLD):
+    logging.info("****** Fold {} ******".format(i + 1))
 
-# Automatically shuffles and buckets the input sequences into
-# sequences of similar length
-train_iter, valid_iter = data.BucketIterator.splits(
-    (train_data, valid_data),
-    sort_key=lambda x: len(x.tweet),  # what function/field to use to group the data
-    batch_size=BATCH_SIZE,
-    device=device
-)
+    train_data, valid_data = train_data.split(split_ratio=SPLIT_RATIO, random_state=random.seed(SEED * i))
 
-# Don't want to shuffle test data, so use a standard iterator
-test_iter = data.Iterator(
-    test_data,
-    batch_size=BATCH_SIZE,
-    device=device,
-    train=False,
-    sort=False,
-    sort_within_batch=False
-)
+    logging.info(f'Number of training examples: {len(train_data)}')
+    logging.info(f'Number of validation examples: {len(valid_data)}')
+    logging.info(f'Number of test examples: {len(test_data)}')
 
-emb_shape = text_variable.vocab.vectors.shape
-input_dim = emb_shape[0]
-embedding_dim = emb_shape[1]
-output_dim = 1
-pretrained_embeddings = text_variable.vocab.vectors
+    # Build the vocabulary using only the train dataset?,
+    # and also by specifying the pretrained embedding
+    text_variable.build_vocab(train_data, vectors=vec, max_size=None)
+    target_variable.build_vocab(train_data)
+    id_variable.build_vocab(test_data)
 
-model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings)
+    logging.info(f'Unique tokens in TEXT vocab: {len(text_variable.vocab)}')
+    logging.info(f'Unique tokens in TARGET vocab: {len(target_variable.vocab)}')
 
-optimizer = optim.Adam(model.parameters())
-criterion = nn.BCEWithLogitsLoss()
+    # Automatically shuffles and buckets the input sequences into
+    # sequences of similar length
+    train_iter, valid_iter = data.BucketIterator.splits(
+        (train_data, valid_data),
+        sort_key=lambda x: len(x.tweet),  # what function/field to use to group the data
+        batch_size=BATCH_SIZE,
+        device=device
+    )
 
-model = model.to(device)
-criterion = criterion.to(device)
+    # Don't want to shuffle test data, so use a standard iterator
+    test_iter = data.Iterator(
+        test_data,
+        batch_size=BATCH_SIZE,
+        device=device,
+        train=False,
+        sort=False,
+        sort_within_batch=False
+    )
 
-trained_model = fit(model, train_iter, valid_iter, optimizer, criterion, N_EPOCHS, MODEL_PATH)
+    emb_shape = text_variable.vocab.vectors.shape
+    input_dim = emb_shape[0]
+    embedding_dim = emb_shape[1]
+    output_dim = 1
+    pretrained_embeddings = text_variable.vocab.vectors
 
-delta = threshold_search(trained_model, valid_iter)
+    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings)
 
-test_pred, test_id = predict(trained_model, test_iter)
+    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    criterion = nn.BCEWithLogitsLoss()
+    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, factor=REDUCE_LEARNING_RATE_FACTOR,
+                                  threshold=REDUCE_LEARNING_RATE_THRESHOLD)
 
-test_pred = (np.array(test_pred) >= delta).astype(int)
-test_id = [id_variable.vocab.itos[i] for i in test_id]
+    model = model.to(device)
+    criterion = criterion.to(device)
+
+    trained_model = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, N_EPOCHS, MODEL_PATH)
+
+    delta = threshold_search(trained_model, valid_iter)
+    test_pred, test_id = predict(trained_model, test_iter)
+
+    test_preds[:, i] = (np.array(test_pred) >= delta).astype(int)
+
+#
+# # test_pred = (np.array(test_pred) >= delta).astype(int)
+#
+# sub['prediction'] = test_preds.mean(1) > search_result['threshold']
 
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
-test["predictions"] = test_pred
+test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
 
 # Performing the evaluation
 (tn, fp, fn, tp), accuracy, weighted_f1, weighted_recall, weighted_precision = evaluatation_scores(test,

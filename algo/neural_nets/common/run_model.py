@@ -87,7 +87,7 @@ def evaluate(model, iterator, criterion):
     return epoch_loss / len(iterator)
 
 
-def fit(model, train_iter, valid_iter, optimizer, criterion, epochs, path):
+def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, path):
     # Track time taken
     start_time = time.time()
     best_loss = math.inf
@@ -97,6 +97,7 @@ def fit(model, train_iter, valid_iter, optimizer, criterion, epochs, path):
 
         trained_model, train_loss = train(model, train_iter, optimizer, criterion)
         valid_loss = evaluate(trained_model, valid_iter, criterion)
+        scheduler.step(valid_loss)
 
         logging.info(f'| Epoch: {epoch + 1:02} '
                      f'| Train Loss: {train_loss:.3f} '
