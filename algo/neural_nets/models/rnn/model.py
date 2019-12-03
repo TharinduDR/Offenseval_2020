@@ -18,15 +18,15 @@ class RNN(nn.Module):
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data.copy_(pretrained_embeddings)
-        self.rnn = nn.LSTM(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
-                           bidirectional=BIDIRECTIONAL, dropout=DROPOUT)
+        self.rnn = nn.GRU(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
+                          bidirectional=BIDIRECTIONAL, dropout=DROPOUT)
         self.fc = nn.Linear(HIDDEN_DIM * 2, output_dim)
         self.dropout = nn.Dropout(DROPOUT)
 
     def forward(self, x):
         x = self.embedding(x)
         embedded = self.dropout(x)
-        output, (hidden, cell) = self.rnn(embedded)
+        output, hidden = self.rnn(embedded)
         hidden = self.dropout(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))
 
         return self.fc(hidden.squeeze(0))

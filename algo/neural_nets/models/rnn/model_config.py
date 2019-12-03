@@ -1,7 +1,9 @@
-TEMP_DIRECTORY = "temp"
+TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-MODEL_PATH = "temp/model.hdfs"
+MODEL_PATH = "temp"
+MODEL_NAME = "model.hdfs"
+GRAPH_NAME = "graph.jpg"
 EMBEDDING_PATH = '/data/glove/glove.840B.300d.txt'
 MAX_SIZE = None
 MAX_LEN = 70

@@ -91,13 +91,17 @@ def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, 
     # Track time taken
     start_time = time.time()
     best_loss = math.inf
-    trained_model = model
+    train_losses = []
+    valid_losses = []
     for epoch in range(epochs):
         epoch_start_time = time.time()
 
         trained_model, train_loss = train(model, train_iter, optimizer, criterion)
         valid_loss = evaluate(trained_model, valid_iter, criterion)
         scheduler.step(valid_loss)
+
+        train_losses.append(train_loss)
+        valid_losses.append(valid_loss)
 
         logging.info(f'| Epoch: {epoch + 1:02} '
                      f'| Train Loss: {train_loss:.3f} '
@@ -111,4 +115,4 @@ def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, 
             torch.save(trained_model, path)
 
     final_model = torch.load(path)
-    return final_model
+    return final_model, train_losses, valid_losses

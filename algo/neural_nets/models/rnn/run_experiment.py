@@ -4,6 +4,7 @@ import random
 
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,7 +20,7 @@ from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
-    REDUCE_LEARNING_RATE_FACTOR
+    REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME
 from project_config import SEED, DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -136,10 +137,26 @@ for i in range(N_FOLD):
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=2, factor=REDUCE_LEARNING_RATE_FACTOR,
                                   threshold=REDUCE_LEARNING_RATE_THRESHOLD)
 
+    path = os.path.join(MODEL_PATH, str(i + 1))
+    if not os.path.exists(path): os.makedirs(path)
+
     model = model.to(device)
     criterion = criterion.to(device)
 
-    trained_model = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, N_EPOCHS, MODEL_PATH)
+    trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
+                                                      N_EPOCHS, os.path.join(path, MODEL_NAME))
+    epoh = list(range(1, N_EPOCHS + 1))
+
+    df = pd.DataFrame(
+        {'epoh': epoh,
+         'validation_loss': valid_losses,
+         'training_losses': trained_losses
+         })
+
+    ax = sns.lineplot(x="epoh", y="value", hue='variable', data=pd.melt(df, ['epoh']))
+    fig = ax.get_figure()
+    fig.savefig(os.path.join(path, GRAPH_NAME))
+    fig.clf()
 
     delta = threshold_search(trained_model, valid_iter)
     test_pred, test_id = predict(trained_model, test_iter)
