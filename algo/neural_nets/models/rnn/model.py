@@ -14,11 +14,11 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 
 class RNN(nn.Module):
     def __init__(self, vocab_size, embedding_dim, output_dim, pretrained_embeddings):
-        super().__init__()
+        super(RNN, self).__init__()
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data.copy_(pretrained_embeddings)
-        self.rnn = nn.GRU(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
+        self.gru = nn.GRU(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
                           bidirectional=BIDIRECTIONAL, dropout=DROPOUT)
         self.fc = nn.Linear(HIDDEN_DIM * 2, output_dim)
         self.dropout = nn.Dropout(DROPOUT)
@@ -26,7 +26,7 @@ class RNN(nn.Module):
     def forward(self, x):
         x = self.embedding(x)
         embedded = self.dropout(x)
-        output, hidden = self.rnn(embedded)
+        output_gru, hidden = self.gru(embedded)
         hidden = self.dropout(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))
 
         return self.fc(hidden.squeeze(0))

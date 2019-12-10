@@ -16,7 +16,7 @@ from torchtext import vocab
 
 from algo.neural_nets.common.preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
-from algo.neural_nets.common.utility import evaluatation_scores
+from algo.neural_nets.common.utility import evaluatation_scores, print_model
 from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
@@ -141,6 +141,7 @@ for i in range(N_FOLD):
     if not os.path.exists(path): os.makedirs(path)
 
     model = model.to(device)
+    print_model(model)
     criterion = criterion.to(device)
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
