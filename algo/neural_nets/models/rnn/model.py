@@ -18,6 +18,8 @@ class RNN(nn.Module):
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data.copy_(pretrained_embeddings)
+        self.embedding.weight.requires_grad = False
+
         self.gru = nn.GRU(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
                           bidirectional=BIDIRECTIONAL, dropout=DROPOUT)
         self.fc = nn.Linear(HIDDEN_DIM * 2, output_dim)

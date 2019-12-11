@@ -84,6 +84,7 @@ test_data = data.TabularDataset(
 
 vec = vocab.Vectors(EMBEDDING_PATH)
 
+
 test_preds = np.zeros((len(test_data), N_FOLD))
 deltas = []
 
