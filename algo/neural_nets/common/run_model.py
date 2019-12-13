@@ -4,6 +4,7 @@ import time
 
 import numpy as np
 import torch
+import torch.nn as nn
 from sklearn.metrics import f1_score
 
 from util.logginghandler import TQDMLoggingHandler
@@ -12,6 +13,23 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
                     level=logging.INFO,
                     handlers=[TQDMLoggingHandler()])
+
+
+def init_model(model, method='xavier', exclude='embedding'):
+    logging.info("Initialising the model")
+    for name, w in model.named_parameters():
+        if not exclude in name:
+            if 'weight' in name:
+                if method is 'xavier':
+                    nn.init.xavier_normal_(w)
+                elif method is 'kaiming':
+                    nn.init.kaiming_normal_(w)
+                else:
+                    nn.init.normal_(w)
+            elif 'bias' in name:
+                nn.init.constant_(w, 0.0)
+            else:
+                pass
 
 
 def threshold_search(trained_model, valid_iter):
@@ -88,6 +106,7 @@ def evaluate(model, iterator, criterion):
 
 
 def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, path):
+    init_model(model)
     # Track time taken
     start_time = time.time()
     best_loss = math.inf

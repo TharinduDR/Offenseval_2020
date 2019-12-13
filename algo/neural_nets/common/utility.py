@@ -1,5 +1,7 @@
 import logging
 
+import pandas as pd
+import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 
 from logginghandler import TQDMLoggingHandler
@@ -28,3 +30,19 @@ def print_model(model):
         logging.info('{} : {}  {} parameters'.format(name, w.shape, w.nelement()))
     logging.info('Total {} parameters'.format(total))
     logging.info('*****************************************')
+
+
+def draw_graph(n_epohs, valid_losses, trained_losses, path):
+    epoh = list(range(1, n_epohs + 1))
+
+    df = pd.DataFrame(
+        {'epoh': epoh,
+         'validation_loss': valid_losses,
+         'training_losses': trained_losses
+         })
+
+    sns.set_style("whitegrid")
+    ax = sns.lineplot(x="epoh", y="value", hue='variable', data=pd.melt(df, ['epoh']))
+    fig = ax.get_figure()
+    fig.savefig(path)
+    fig.clf()
