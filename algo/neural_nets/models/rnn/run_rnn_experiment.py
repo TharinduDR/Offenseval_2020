@@ -4,7 +4,6 @@ import random
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -16,7 +15,7 @@ from torchtext import vocab
 
 from algo.neural_nets.common.preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
-from algo.neural_nets.common.utility import evaluatation_scores, print_model
+from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
 from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
@@ -84,7 +83,6 @@ test_data = data.TabularDataset(
 
 vec = vocab.Vectors(EMBEDDING_PATH)
 
-
 test_preds = np.zeros((len(test_data), N_FOLD))
 deltas = []
 
@@ -99,7 +97,7 @@ for i in range(N_FOLD):
 
     # Build the vocabulary using only the train dataset?,
     # and also by specifying the pretrained embedding
-    text_variable.build_vocab(train_data, vectors=vec, max_size=None)
+    text_variable.build_vocab(train_data, test_data, valid_data, vectors=vec, max_size=None)
     target_variable.build_vocab(train_data)
     id_variable.build_vocab(test_data)
 
@@ -147,28 +145,14 @@ for i in range(N_FOLD):
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
                                                       N_EPOCHS, os.path.join(path, MODEL_NAME))
-    epoh = list(range(1, N_EPOCHS + 1))
 
-    df = pd.DataFrame(
-        {'epoh': epoh,
-         'validation_loss': valid_losses,
-         'training_losses': trained_losses
-         })
-
-    ax = sns.lineplot(x="epoh", y="value", hue='variable', data=pd.melt(df, ['epoh']))
-    fig = ax.get_figure()
-    fig.savefig(os.path.join(path, GRAPH_NAME))
-    fig.clf()
+    draw_graph(n_epohs=N_EPOCHS, valid_losses=valid_losses, trained_losses=trained_losses,
+               path=os.path.join(path, GRAPH_NAME))
 
     delta = threshold_search(trained_model, valid_iter)
     test_pred, test_id = predict(trained_model, test_iter)
 
     test_preds[:, i] = (np.array(test_pred) >= delta).astype(int)
-
-#
-# # test_pred = (np.array(test_pred) >= delta).astype(int)
-#
-# sub['prediction'] = test_preds.mean(1) > search_result['threshold']
 
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
 test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)

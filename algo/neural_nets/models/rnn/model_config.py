@@ -6,7 +6,6 @@ MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.jpg"
 EMBEDDING_PATH = '/data/glove/glove.840B.300d.txt'
 MAX_SIZE = None
-MAX_LEN = 70
 SPLIT_RATIO = 0.9
 BATCH_SIZE = 256
 HIDDEN_DIM = 32
