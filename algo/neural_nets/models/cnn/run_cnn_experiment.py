@@ -18,8 +18,8 @@ from algo.neural_nets.common.utility import evaluatation_scores, print_model
 from algo.neural_nets.models.cnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME
-from neural_nets.common.run_model import threshold_search, predict, fit
-from neural_nets.models.cnn.model import CNN
+from algo.neural_nets.common.run_model import threshold_search, predict, fit
+from algo.neural_nets.models.cnn.model import CNN
 from project_config import SEED, DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -141,7 +141,7 @@ for i in range(N_FOLD):
     if not os.path.exists(path): os.makedirs(path)
 
     model = model.to(device)
-    print_model(model)
+    if i == 0: print_model(model)
     criterion = criterion.to(device)
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,

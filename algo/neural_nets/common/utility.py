@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, recall_score, precision_score
 
-from logginghandler import TQDMLoggingHandler
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',

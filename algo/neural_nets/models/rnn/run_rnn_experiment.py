@@ -140,7 +140,7 @@ for i in range(N_FOLD):
     if not os.path.exists(path): os.makedirs(path)
 
     model = model.to(device)
-    print_model(model)
+    if i == 0: print_model(model)
     criterion = criterion.to(device)
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
