@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from neural_nets.models.cnn.model_config import DROPOUT, KERNEL_NUM, FIXED_LENGTH, KERNEL_SIZE
+from algo.neural_nets.models.cnn.model_config import DROPOUT, KERNEL_NUM, FIXED_LENGTH, KERNEL_SIZE
 
 
 class CNN(nn.Module):
@@ -12,6 +12,7 @@ class CNN(nn.Module):
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data.copy_(pretrained_embeddings)
         self.embedding.padding_idx = padding_idx
+        self.embedding.weight.requires_grad = False
 
         self.conv = nn.ModuleList([nn.Conv2d(1, KERNEL_NUM, (i, self.embedding.embedding_dim)) for i in KERNEL_SIZE])
         self.maxpools = [nn.MaxPool2d((FIXED_LENGTH + 1 - i, 1)) for i in KERNEL_SIZE]

@@ -1,5 +1,4 @@
 import logging
-import math
 import time
 
 import numpy as np
@@ -105,11 +104,11 @@ def evaluate(model, iterator, criterion):
     return epoch_loss / len(iterator)
 
 
-def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, path):
+def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, path, gradually_unfreeze, freeze_for):
     init_model(model)
     # Track time taken
     start_time = time.time()
-    best_loss = math.inf
+    best_loss = float('inf')
     train_losses = []
     valid_losses = []
     for epoch in range(epochs):
@@ -132,6 +131,9 @@ def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, 
             best_loss = valid_loss
             logging.info("Saving the current best model")
             torch.save(trained_model, path)
+
+        if gradually_unfreeze and (epoch + 1) >= freeze_for:
+            model.embedding.weight.requires_grad = True
 
     final_model = torch.load(path)
     return final_model, train_losses, valid_losses
