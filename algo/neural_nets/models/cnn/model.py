@@ -22,7 +22,7 @@ class CNN(nn.Module):
         x = self.embedding(x).unsqueeze(1)
         x = [self.maxpools[i](torch.tanh(cov(x))).squeeze(3).squeeze(2) for i, cov in enumerate(self.conv)]  # B X Kn
 
-        x = torch.cat(x, dim=1)  # B X Kn * len(Kz)
+        x = torch.cat(x, dim=1)
         x = self.dropout(x)
         y = self.fc(x)
         return y
