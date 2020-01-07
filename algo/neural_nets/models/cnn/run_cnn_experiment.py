@@ -14,13 +14,13 @@ from torchtext import data
 from torchtext import vocab
 
 from algo.neural_nets.common.preprocessing import pipeline
+from algo.neural_nets.common.run_model import threshold_search, predict, fit
 from algo.neural_nets.common.utility import evaluatation_scores, print_model
+from algo.neural_nets.models.cnn.model import CNN
 from algo.neural_nets.models.cnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME
-from algo.neural_nets.common.run_model import threshold_search, predict, fit
-from algo.neural_nets.models.cnn.model import CNN
-from project_config import SEED, DATA_PATH
+from project_config import SEED, DATA_PATH, VECTOR_CACHE
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -81,7 +81,7 @@ test_data = data.TabularDataset(
     fields=test_fields
 )
 
-vec = vocab.Vectors(EMBEDDING_PATH)
+vec = vocab.Vectors(EMBEDDING_PATH, cache=VECTOR_CACHE)
 
 test_preds = np.zeros((len(test_data), N_FOLD))
 deltas = []

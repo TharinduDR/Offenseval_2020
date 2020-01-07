@@ -20,7 +20,7 @@ from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, EMBEDDING_PATH, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR
-from project_config import SEED, DATA_PATH
+from project_config import SEED, DATA_PATH, VECTOR_CACHE
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -81,7 +81,7 @@ test_data = data.TabularDataset(
     fields=test_fields
 )
 
-vec = vocab.Vectors(EMBEDDING_PATH)
+vec = vocab.Vectors(EMBEDDING_PATH, cache=VECTOR_CACHE)
 
 test_preds = np.zeros((len(test_data), N_FOLD))
 deltas = []
@@ -160,8 +160,8 @@ test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
 
 # Performing the evaluation
 (tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
-                                                                                                   'encoded_subtask_a',
-                                                                                                   "predictions")
+                                                                                                             'encoded_subtask_a',
+                                                                                                             "predictions")
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
 logging.info("Weighted F1 {}".format(weighted_f1))
