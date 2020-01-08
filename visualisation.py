@@ -3,7 +3,9 @@ import numpy as np
 from nltk.corpus import stopwords
 from wordcloud import WordCloud, STOPWORDS
 
-greek_stopwords = set(stopwords.words('greek'))
+from algo.neural_nets.common.english_preprocessing import clean_numbers, clean_text, remove_words
+
+english_stopwords = set(stopwords.words('english'))
 
 
 def plot_data(df, class_name):
@@ -25,12 +27,15 @@ def plot_data(df, class_name):
 
 
 def plot_word_cloud(df):
+    df["tweet"] = df["tweet"].apply(lambda x: clean_text(x))
+    df["tweet"] = df["tweet"].apply(lambda x: clean_numbers(x))
+    df["tweet"] = df["tweet"].apply(lambda x: remove_words(x))
     text = df.tweet.values
     wordcloud = WordCloud(
         width=3000,
         height=2000,
         background_color='black',
-        stopwords=greek_stopwords).generate(str(text))
+        stopwords=english_stopwords).generate(str(text))
     fig = plt.figure(
         figsize=(40, 30),
         facecolor='k',
@@ -39,4 +44,3 @@ def plot_word_cloud(df):
     plt.axis('off')
     plt.tight_layout(pad=0)
     plt.show()
-
