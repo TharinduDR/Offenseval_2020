@@ -18,10 +18,10 @@ from neural_nets.common.run_model import fit, threshold_search, predict
 from neural_nets.common.utility import print_model, draw_graph, evaluatation_scores
 from neural_nets.models.bert.model import BERTGRU
 from neural_nets.models.bert.model_config import TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, SPLIT_RATIO, BATCH_SIZE, \
-    BERT_MODEL, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, REDUCE_LEARNING_RATE_FACTOR, MODEL_PATH, N_EPOCHS, \
+    ENGLISH_BERT_MODEL, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, REDUCE_LEARNING_RATE_FACTOR, MODEL_PATH, N_EPOCHS, \
     MODEL_NAME, GRAPH_NAME
 from neural_nets.models.bert.utility import get_tokenizer, tokenize_and_cut
-from project_config import SEED, DATA_PATH
+from project_config import SEED, ENGLISH_DATA_PATH
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
@@ -35,7 +35,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(DATA_PATH, sep='\t')
+full = pd.read_csv(ENGLISH_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
 full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
@@ -137,7 +137,7 @@ for i in range(N_FOLD):
     )
 
     output_dim = 1
-    bert = BertModel.from_pretrained(BERT_MODEL)
+    bert = BertModel.from_pretrained(ENGLISH_BERT_MODEL)
 
     model = BERTGRU(bert, output_dim)
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
