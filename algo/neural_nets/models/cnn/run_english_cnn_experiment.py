@@ -19,7 +19,7 @@ from algo.neural_nets.common.utility import evaluatation_scores, print_model
 from algo.neural_nets.models.cnn.model import CNN
 from algo.neural_nets.models.cnn.model_config import SPLIT_RATIO, ENGLISH_EMBEDDING_PATH, BATCH_SIZE, \
     MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
-    REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR
+    REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE
 from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE
 from util.logginghandler import TQDMLoggingHandler
 
@@ -158,6 +158,9 @@ test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
 (tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
                                                                                                    'encoded_subtask_a',
                                                                                                    "predictions")
+
+test.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
 logging.info("Weighted F1 {}".format(weighted_f1))

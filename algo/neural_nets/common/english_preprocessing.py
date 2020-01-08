@@ -28,6 +28,12 @@ def tokenizer(x):
     return [w.text.lower() for w in nlp(x)]
 
 
+def remove_words(x):
+    x = x.replace('USER', '')
+    x = x.replace('URL', '')
+    return x
+
+
 def clean_text(x):
     x = str(x)
     for punct in puncts:
@@ -46,4 +52,5 @@ def clean_numbers(x):
 def pipeline(x):
     x = clean_text(x)
     x = clean_numbers(x)
+    x = remove_words(x)
     return tokenizer(x)
