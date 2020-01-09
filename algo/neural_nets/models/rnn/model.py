@@ -20,7 +20,7 @@ class RNN(nn.Module):
         self.embedding.weight.data.copy_(pretrained_embeddings)
         self.embedding.weight.requires_grad = False
 
-        self.rnn = nn.GRU(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
+        self.rnn = nn.LSTM(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
                           bidirectional=BIDIRECTIONAL, dropout=0 if N_LAYERS < 2 else DROPOUT)
         self.fc = nn.Linear(HIDDEN_DIM * 2 if BIDIRECTIONAL else HIDDEN_DIM, output_dim)
         self.dropout = nn.Dropout(DROPOUT)
@@ -28,7 +28,7 @@ class RNN(nn.Module):
     def forward(self, x):
         x = self.embedding(x)
         embedded = self.dropout(x)
-        output_gru, hidden = self.rnn(embedded)
+        output_gru, (hidden, cell) = self.rnn(embedded)
 
         if self.rnn.bidirectional:
             hidden = self.dropout(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))

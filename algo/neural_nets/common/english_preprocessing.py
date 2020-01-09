@@ -25,7 +25,7 @@ puncts = [',', '.', '"', ':', ')', '(', '-', '!', '?', '|', ';', "'", '$', '&', 
 
 
 def tokenizer(x):
-    return [w.text.lower() for w in nlp(x)]
+    return [w.text.lower() for w in nlp(x) if not w.is_stop]
 
 
 def remove_words(x):
