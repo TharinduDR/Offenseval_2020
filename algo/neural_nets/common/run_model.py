@@ -105,7 +105,6 @@ def evaluate(model, iterator, criterion):
 
 
 def fit(model, train_iter, valid_iter, optimizer, criterion, scheduler, epochs, path, gradually_unfreeze, freeze_for):
-    init_model(model)
     # Track time taken
     start_time = time.time()
     best_loss = float('inf')

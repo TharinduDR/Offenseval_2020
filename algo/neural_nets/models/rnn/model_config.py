@@ -1,7 +1,9 @@
 TEMP_DIRECTORY = "temp/data"
+TEMP_DIRECTORY_TL = "temp_tl/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
+TRANSFER_LEARNING = True
 MODEL_PATH = "temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"

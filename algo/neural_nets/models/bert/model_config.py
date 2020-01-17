@@ -1,7 +1,7 @@
 TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-ENGLISH_BERT_MODEL = "bert-base-uncased"
+ENGLISH_BERT_MODEL = "bert-large-uncased"
 MODEL_PATH = "temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.jpg"
@@ -17,3 +17,5 @@ N_FOLD = 5
 LEARNING_RATE = 0.9e-3
 REDUCE_LEARNING_RATE_THRESHOLD = 1e-6
 REDUCE_LEARNING_RATE_FACTOR = 0.9
+GRADUALLY_UNFREEZE = False
+FREEZE_FOR = 20
