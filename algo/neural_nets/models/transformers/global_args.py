@@ -1,5 +1,7 @@
 from multiprocessing import cpu_count
 
+MODEL_TYPE = "roberta"
+MODEL_NAME = "roberta-base"
 TEMP_DIRECTORY = "temp/data"
 RESULT_FILE = "result.tsv"
 
@@ -9,7 +11,7 @@ global_args = {
 
     'fp16': True,
     'fp16_opt_level': 'O1',
-    'max_seq_length': 512,
+    'max_seq_length': 128,
     'train_batch_size': 8,
     'gradient_accumulation_steps': 1,
     'eval_batch_size': 8,

@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from logginghandler import TQDMLoggingHandler
 from neural_nets.common.utility import evaluatation_scores
-from neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE
+from neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
 from neural_nets.models.transformers.run_model import ClassificationModel
 from project_config import SEED, ENGLISH_DATA_PATH
 
@@ -29,13 +29,12 @@ le = LabelEncoder()
 full['label'] = le.fit_transform(full["subtask_a"])
 full['text'] = full["tweet"]
 
-
 full = full[['text', 'label']]
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
 
 # Create a ClassificationModel
-model = ClassificationModel('roberta', 'roberta-base',
-                            use_cuda=False)  # You can set class weights by using the optional weight argument
+model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
+                            use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
 logging.info("Started Training")
