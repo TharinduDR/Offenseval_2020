@@ -6,10 +6,10 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from logginghandler import TQDMLoggingHandler
-from neural_nets.common.utility import evaluatation_scores
-from neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
-from neural_nets.models.transformers.run_model import ClassificationModel
+from util.logginghandler import TQDMLoggingHandler
+from algo.neural_nets.common.utility import evaluatation_scores
+from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
+from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from project_config import SEED, ENGLISH_DATA_PATH
 
 logging.basicConfig(format='%(asctime)s - %(message)s',

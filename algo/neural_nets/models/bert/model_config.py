@@ -1,7 +1,7 @@
 TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-ENGLISH_BERT_MODEL = "bert-large-uncased"
+ENGLISH_BERT_MODEL = "bert-base-cased"
 MODEL_PATH = "temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.jpg"

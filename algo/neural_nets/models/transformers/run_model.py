@@ -35,16 +35,16 @@ from transformers import (
     XLMRobertaConfig, XLMRobertaTokenizer,
 )
 
-from neural_nets.models.transformers.global_args import global_args
-from neural_nets.models.transformers.models.albert_model import AlbertForSequenceClassification
-from neural_nets.models.transformers.models.bert_model import BertForSequenceClassification
-from neural_nets.models.transformers.models.camembert_model import CamembertForSequenceClassification
-from neural_nets.models.transformers.models.distilbert_model import DistilBertForSequenceClassification
-from neural_nets.models.transformers.models.roberta_model import RobertaForSequenceClassification
-from neural_nets.models.transformers.models.xlm_model import XLMForSequenceClassification
-from neural_nets.models.transformers.models.xlm_roberta_model import XLMRobertaForSequenceClassification
-from neural_nets.models.transformers.models.xlnet_model import XLNetForSequenceClassification
-from neural_nets.models.transformers.utils import InputExample, convert_examples_to_features
+from algo.neural_nets.models.transformers.global_args import global_args
+from algo.neural_nets.models.transformers.models.albert_model import AlbertForSequenceClassification
+from algo.neural_nets.models.transformers.models.bert_model import BertForSequenceClassification
+from algo.neural_nets.models.transformers.models.camembert_model import CamembertForSequenceClassification
+from algo.neural_nets.models.transformers.models.distilbert_model import DistilBertForSequenceClassification
+from algo.neural_nets.models.transformers.models.roberta_model import RobertaForSequenceClassification
+from algo.neural_nets.models.transformers.models.xlm_model import XLMForSequenceClassification
+from algo.neural_nets.models.transformers.models.xlm_roberta_model import XLMRobertaForSequenceClassification
+from algo.neural_nets.models.transformers.models.xlnet_model import XLNetForSequenceClassification
+from algo.neural_nets.models.transformers.utils import InputExample, convert_examples_to_features
 
 
 class ClassificationModel:
