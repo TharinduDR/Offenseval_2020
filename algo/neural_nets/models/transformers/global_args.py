@@ -1,7 +1,7 @@
 from multiprocessing import cpu_count
 
-MODEL_TYPE = "roberta"
-MODEL_NAME = "roberta-base"
+MODEL_TYPE = "bert"
+MODEL_NAME = "bert-base-cased"
 TEMP_DIRECTORY = "temp/data"
 RESULT_FILE = "result.tsv"
 
