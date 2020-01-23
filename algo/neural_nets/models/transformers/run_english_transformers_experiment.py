@@ -2,15 +2,17 @@ import logging
 import os
 
 import pandas as pd
+import sklearn
 import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from util.logginghandler import TQDMLoggingHandler
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.common.english_preprocessing import remove_words
 from project_config import SEED, ENGLISH_DATA_PATH
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
@@ -30,6 +32,7 @@ full['label'] = le.fit_transform(full["subtask_a"])
 full['text'] = full["tweet"]
 
 full = full[['text', 'label']]
+full['text'] = full['text'].apply(lambda x: remove_words(x))
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
 
 # Create a ClassificationModel
@@ -38,7 +41,8 @@ model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
 
 # Train the model
 logging.info("Started Training")
-model.train_model(train)
+f1 = sklearn.metrics.f1_score
+model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
 logging.info("Finished Training")
 # Evaluate the model
 test_sentences = test['text'].tolist()

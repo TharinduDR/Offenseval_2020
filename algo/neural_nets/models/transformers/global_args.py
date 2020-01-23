@@ -15,7 +15,7 @@ global_args = {
     'train_batch_size': 8,
     'gradient_accumulation_steps': 1,
     'eval_batch_size': 8,
-    'num_train_epochs': 1,
+    'num_train_epochs': 3,
     'weight_decay': 0,
     'learning_rate': 4e-5,
     'adam_epsilon': 1e-8,
@@ -28,9 +28,9 @@ global_args = {
     'save_steps': 2000,
     'save_model_every_epoch': True,
     'evaluate_during_training': False,
-    'evaluate_during_training_steps': 2000,
+    'evaluate_during_training_steps': 50,
     'use_cached_eval_features': True,
-    'save_eval_checkpoints': True,
+    'save_eval_checkpoints': False,
     'tensorboard_dir': None,
 
     'overwrite_output_dir': True,
@@ -41,6 +41,6 @@ global_args = {
     'use_multiprocessing': True,
     'silent': False,
 
-    'wandb_project': None,
+    'wandb_project': "OffensEval_2020",
     'wandb_kwargs': {},
 }

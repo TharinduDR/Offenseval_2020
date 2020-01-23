@@ -74,5 +74,8 @@ fabric.properties
 .ipynb_checkpoints
 
 data
+runs/
+temp/
+wandb
 *.pyc
 

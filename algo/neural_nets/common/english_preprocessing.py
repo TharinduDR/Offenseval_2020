@@ -29,7 +29,7 @@ def tokenizer(x):
 
 
 def remove_words(x):
-    x = x.replace('USER', '')
+    x = x.replace('@USER', '')
     x = x.replace('URL', '')
     return x
 

@@ -74,6 +74,7 @@ fabric.properties
 .ipynb_checkpoints
 
 temp/
-runs
+runs/
+wandb/
 .vector_cache
 

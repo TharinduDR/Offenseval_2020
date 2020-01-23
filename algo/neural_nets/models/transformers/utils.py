@@ -23,7 +23,7 @@ from multiprocessing import Pool, cpu_count
 
 from tqdm.auto import tqdm
 
-from logginghandler import TQDMLoggingHandler
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
