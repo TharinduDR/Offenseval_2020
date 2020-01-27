@@ -1,5 +1,5 @@
 ## Transformers
-This folder includes the different experiments we did with RNNs for DeftEval 2020.
+This folder includes the different experiments we did with Transformers for OffensEval 2020.
 
 #### English Experiments
 

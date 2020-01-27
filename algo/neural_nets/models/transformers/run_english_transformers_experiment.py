@@ -7,11 +7,13 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.utility import evaluatation_scores
-from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from algo.neural_nets.common.english_preprocessing import remove_words
-from project_config import SEED, ENGLISH_DATA_PATH
+from algo.neural_nets.common.utility import evaluatation_scores
+from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
+    INCLUDE_SUPPORT, global_args
+from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from filtering import filter_supportfile
+from project_config import SEED, ENGLISH_DATA_PATH, SUPPORT_ENGLISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -28,12 +30,24 @@ if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 full = pd.read_csv(ENGLISH_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
-full['label'] = le.fit_transform(full["subtask_a"])
-full['text'] = full["tweet"]
-
-full = full[['text', 'label']]
-full['text'] = full['text'].apply(lambda x: remove_words(x))
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
+train['label'] = le.fit_transform(train["subtask_a"])
+train['text'] = train["tweet"]
+train = train[['text', 'label']]
+train['text'] = train['text'].apply(lambda x: remove_words(x))
+
+if INCLUDE_SUPPORT:
+    support = pd.read_csv(SUPPORT_ENGLISH_DATA_PATH, sep='\t')
+    support = filter_supportfile(support)
+    support['label'] = le.fit_transform(support["subtask_a"])
+    support = support[['text', 'label']]
+    support['text'] = support['text'].apply(lambda x: remove_words(x))
+    train = pd.concat([train, support])
+
+test['label'] = le.fit_transform(test["subtask_a"])
+test['text'] = test["tweet"]
+test = test[['text', 'label']]
+test['text'] = test['text'].apply(lambda x: remove_words(x))
 
 # Create a ClassificationModel
 model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
@@ -43,9 +57,21 @@ model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
 logging.info("Started Training")
 f1 = sklearn.metrics.f1_score
 model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
+
+if global_args["evaluate_during_training"]:
+    train, eval_df = train_test_split(train, test_size=0.2, random_state=SEED)
+    model.train_model(train, eval_df=eval_df)
+
+else:
+    model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
+
 logging.info("Finished Training")
 # Evaluate the model
 test_sentences = test['text'].tolist()
+
+if global_args["evaluate_during_training"]:
+    model = ClassificationModel(MODEL_TYPE, global_args["best_model_dir"], use_cuda=torch.cuda.is_available())
+
 predictions, raw_outputs = model.predict(test_sentences)
 
 test['predictions'] = predictions
