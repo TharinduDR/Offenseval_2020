@@ -1,17 +1,16 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "temp/data"
+TEMP_DIRECTORY = "hasoc_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
 MODEL_NAME = "bert-base-cased"
-HASOC_TRANSFER_LEARNING = True
 
-global_args = {
-    'output_dir': 'temp/outputs/',
-    "best_model_dir": "temp/outputs/best_model",
-    'cache_dir': 'temp/cache_dir/',
+hasoc_args = {
+    'output_dir': 'hasoc_temp/outputs/',
+    "best_model_dir": "hasoc_temp/outputs/best_model",
+    'cache_dir': 'hasoc_temp/cache_dir/',
 
     'fp16': False,
     'fp16_opt_level': 'O1',
@@ -29,12 +28,12 @@ global_args = {
     'do_lower_case': False,
 
     'logging_steps': 50,
-    'save_steps': 500,
+    'save_steps': 100,
     "no_cache": False,
     'save_model_every_epoch': True,
     'evaluate_during_training': True,
-    'evaluate_during_training_steps': 500,
-    "evaluate_during_training_verbose": False,
+    'evaluate_during_training_steps': 100,
+    "evaluate_during_training_verbose": True,
     'use_cached_eval_features': True,
     'save_eval_checkpoints': True,
     'tensorboard_dir': None,
@@ -47,7 +46,7 @@ global_args = {
     'use_multiprocessing': True,
     'silent': False,
 
-    'wandb_project': None,
+    'wandb_project': "HASOC_2019",
     'wandb_kwargs': {},
 
     "use_early_stopping": True,

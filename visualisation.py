@@ -27,9 +27,10 @@ def plot_data(df, class_name):
 
 
 def plot_word_cloud(df):
+    df["tweet"] = df["tweet"].apply(lambda x: remove_words(x))
     df["tweet"] = df["tweet"].apply(lambda x: clean_text(x))
     df["tweet"] = df["tweet"].apply(lambda x: clean_numbers(x))
-    df["tweet"] = df["tweet"].apply(lambda x: remove_words(x))
+
     text = df.tweet.values
     wordcloud = WordCloud(
         width=3000,

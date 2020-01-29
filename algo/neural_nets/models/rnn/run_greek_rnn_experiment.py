@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
@@ -17,9 +18,10 @@ from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
 from algo.neural_nets.models.rnn.model import RNN
 from algo.neural_nets.models.rnn.model_config import SPLIT_RATIO, ENGLISH_EMBEDDING_PATH, BATCH_SIZE, \
-    N_EPOCHS, MODEL_PATH, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
-    REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, TEMP_DIRECTORY_TL
-from project_config import SEED, VECTOR_CACHE, SUPPORT_ENGLISH_DATA_PATH
+    N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
+    REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
+    GREEK_EMBEDDING_PATH
+from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE, GREEK_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -32,16 +34,16 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-if not os.path.exists(TEMP_DIRECTORY_TL): os.makedirs(TEMP_DIRECTORY_TL)
+if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(SUPPORT_ENGLISH_DATA_PATH, sep='\t')
-full['tweet'] = full['text']
-full['encoded_subtask_a'] = full['average'].apply(lambda x: 0 if x < 0.5 else 1)
+full = pd.read_csv(GREEK_DATA_PATH, sep='\t')
 
+le = LabelEncoder()
+full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
 
-train.to_csv(os.path.join(TEMP_DIRECTORY_TL, TRAIN_FILE), header=True, sep='\t', index=False, encoding='utf-8')
-test.to_csv(os.path.join(TEMP_DIRECTORY_TL, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+train.to_csv(os.path.join(TEMP_DIRECTORY, TRAIN_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+test.to_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 id_variable = data.Field()
 text_variable = data.Field(tokenize=pipeline)
@@ -49,43 +51,43 @@ target_variable = data.LabelField(dtype=torch.float)
 
 train_fields = [
     ('id', None),  # we dont need this, so no processing
-    ('text', None),
     ('tweet', text_variable),  # process it as text
-    ('average', None),
-    ('std', None),
+    ('subtask_a', None),  # process it as label
+    ('subtask_b', None),  # we dont need this, so no processing
+    ('subtask_c', None),  # we dont need this, so no processing
     ('encoded_subtask_a', target_variable)
 ]
 
 test_fields = [
-    ('id', id_variable),  # we dont need this, so no processing
-    ('text', None),
+    ('id', id_variable),  # we process this as id field
     ('tweet', text_variable),  # process it as text
-    ('average', None),
-    ('std', None),
-    ('encoded_subtask_a', target_variable)
+    ('subtask_a', None),  # process it as label
+    ('subtask_b', None),  # we dont need this, so no processing
+    ('subtask_c', None),  # we dont need this, so no processing
+    ('encoded_subtask_a', None)
 ]
 
 # Creating our train and test data
 train_data = data.TabularDataset(
-    path=os.path.join(TEMP_DIRECTORY_TL, TRAIN_FILE),
+    path=os.path.join(TEMP_DIRECTORY, TRAIN_FILE),
     format='tsv',
     skip_header=True,
     fields=train_fields
 )
 
 test_data = data.TabularDataset(
-    path=os.path.join(TEMP_DIRECTORY_TL, TEST_FILE),
+    path=os.path.join(TEMP_DIRECTORY, TEST_FILE),
     format='tsv',
     skip_header=True,
     fields=test_fields
 )
 
-vec = vocab.Vectors(ENGLISH_EMBEDDING_PATH, cache=VECTOR_CACHE)
+vec = vocab.Vectors(GREEK_EMBEDDING_PATH, cache=VECTOR_CACHE)
 
 test_preds = np.zeros((len(test_data), N_FOLD))
 deltas = []
 
-for i in range(1):
+for i in range(N_FOLD):
     logging.info("****** Fold {} ******".format(i + 1))
 
     train_data, valid_data = train_data.split(split_ratio=SPLIT_RATIO, random_state=random.seed(SEED * i))
@@ -143,10 +145,10 @@ for i in range(1):
     criterion = criterion.to(device)
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
-                                                      5, os.path.join(path, MODEL_NAME), GRADUALLY_UNFREEZE,
+                                                      N_EPOCHS, os.path.join(path, MODEL_NAME), GRADUALLY_UNFREEZE,
                                                       FREEZE_FOR)
 
-    draw_graph(n_epohs=5, valid_losses=valid_losses, trained_losses=trained_losses,
+    draw_graph(n_epohs=N_EPOCHS, valid_losses=valid_losses, trained_losses=trained_losses,
                path=os.path.join(path, GRAPH_NAME))
 
     delta = threshold_search(trained_model, valid_iter)
@@ -154,7 +156,7 @@ for i in range(1):
 
     test_preds[:, i] = (np.array(test_pred) >= delta).astype(int)
 
-test = pd.read_csv(os.path.join(TEMP_DIRECTORY_TL, TEST_FILE), sep='\t')
+test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
 test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
 
 # Performing the evaluation
@@ -162,7 +164,7 @@ test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
                                                                                                              'encoded_subtask_a',
                                                                                                              "predictions")
 
-test.to_csv(os.path.join(TEMP_DIRECTORY_TL, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+test.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))

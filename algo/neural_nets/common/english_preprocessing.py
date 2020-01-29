@@ -34,6 +34,18 @@ def remove_words(x):
     return x
 
 
+def remove_names(x):
+    for word in x.split():
+        if word[0] == "@":
+            x = x.replace(word, "")
+    return x
+
+
+def remove_urls(x):
+    result = re.sub(r"http\S+", "", x)
+    return result
+
+
 def clean_text(x):
     x = str(x)
     for punct in puncts:
