@@ -7,11 +7,11 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.english_preprocessing import remove_words, remove_names, remove_urls
+from algo.neural_nets.common.english_preprocessing import remove_names, remove_urls
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.hasoc_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
+from algo.neural_nets.models.transformers.hasoc_args import hasoc_args
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
-from neural_nets.models.transformers.hasoc_args import hasoc_args
 from project_config import SEED, HASOC_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -46,7 +46,6 @@ model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=hasoc_args,
 
 # Train the model
 logging.info("Started Training")
-f1 = sklearn.metrics.f1_score
 
 if hasoc_args["evaluate_during_training"]:
     train, eval_df = train_test_split(train, test_size=0.2, random_state=SEED)

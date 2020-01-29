@@ -12,9 +12,8 @@ from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
     global_args, HASOC_TRANSFER_LEARNING
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
-from filtering import filter_supportfile
-from neural_nets.models.transformers.hasoc_args import hasoc_args
-from project_config import SEED, ENGLISH_DATA_PATH, SUPPORT_ENGLISH_DATA_PATH
+from algo.neural_nets.models.transformers.hasoc_args import hasoc_args
+from project_config import SEED, ENGLISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -49,7 +48,7 @@ if HASOC_TRANSFER_LEARNING:
 
 else:
     model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
-                            use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
+                                use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
 logging.info("Started Training")
