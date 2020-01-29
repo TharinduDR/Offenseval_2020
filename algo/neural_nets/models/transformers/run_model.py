@@ -35,7 +35,6 @@ from transformers import (
     XLMRobertaConfig, XLMRobertaTokenizer,
 )
 
-from algo.neural_nets.models.transformers.global_args import global_args
 from algo.neural_nets.models.transformers.models.albert_model import AlbertForSequenceClassification
 from algo.neural_nets.models.transformers.models.bert_model import BertForSequenceClassification
 from algo.neural_nets.models.transformers.models.camembert_model import CamembertForSequenceClassification
@@ -49,7 +48,7 @@ from algo.neural_nets.models.transformers.utils import InputExample, convert_exa
 
 class ClassificationModel:
     def __init__(
-            self, model_type, model_name, num_labels=None, weight=None, args=None, use_cuda=True, cuda_device=-1,
+            self, model_type, model_name, args, num_labels=None, weight=None, use_cuda=True, cuda_device=-1,
             **kwargs,
     ):
 
@@ -118,12 +117,10 @@ class ClassificationModel:
             "regression": False,
         }
 
-        self.args.update(global_args)
-
         if not use_cuda:
             self.args["fp16"] = False
 
-        if args:
+        if args is not None:
             self.args.update(args)
 
         self.tokenizer = tokenizer_class.from_pretrained(model_name, do_lower_case=self.args["do_lower_case"], **kwargs)

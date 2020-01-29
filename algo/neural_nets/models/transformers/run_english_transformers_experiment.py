@@ -11,8 +11,8 @@ from algo.neural_nets.common.english_preprocessing import remove_words
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
     global_args, HASOC_TRANSFER_LEARNING
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from algo.neural_nets.models.transformers.hasoc_args import hasoc_args
+from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from project_config import SEED, ENGLISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -43,11 +43,11 @@ test['text'] = test['text'].apply(lambda x: remove_words(x))
 
 # Create a ClassificationModel
 if HASOC_TRANSFER_LEARNING:
-    model = ClassificationModel(MODEL_TYPE, hasoc_args['best_model_dir'],
+    model = ClassificationModel(MODEL_TYPE, hasoc_args['best_model_dir'], args=global_args,
                                 use_cuda=torch.cuda.is_available())
 
 else:
-    model = ClassificationModel(MODEL_TYPE, MODEL_NAME,
+    model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=global_args,
                                 use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
