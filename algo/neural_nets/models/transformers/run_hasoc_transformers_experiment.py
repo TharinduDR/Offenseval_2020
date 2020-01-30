@@ -48,7 +48,7 @@ model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=hasoc_args,
 logging.info("Started Training")
 
 if hasoc_args["evaluate_during_training"]:
-    train, eval_df = train_test_split(train, test_size=0.2, random_state=SEED)
+    train, eval_df = train_test_split(train, test_size=0.1, random_state=SEED)
     model.train_model(train, eval_df=eval_df, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
 
 else:
