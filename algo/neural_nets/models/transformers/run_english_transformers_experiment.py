@@ -56,7 +56,7 @@ f1 = sklearn.metrics.f1_score
 model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
 
 if global_args["evaluate_during_training"]:
-    train, eval_df = train_test_split(train, test_size=0.2, random_state=SEED)
+    train, eval_df = train_test_split(train, test_size=0.1, random_state=SEED)
     model.train_model(train, eval_df=eval_df)
 
 else:
