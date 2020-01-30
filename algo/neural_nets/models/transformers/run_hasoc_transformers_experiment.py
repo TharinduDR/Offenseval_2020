@@ -59,7 +59,8 @@ logging.info("Finished Training")
 test_sentences = test['text'].tolist()
 
 if hasoc_args["evaluate_during_training"]:
-    model = ClassificationModel(MODEL_TYPE, hasoc_args["best_model_dir"], use_cuda=torch.cuda.is_available())
+    model = ClassificationModel(MODEL_TYPE, hasoc_args["best_model_dir"], args=hasoc_args,
+                                use_cuda=torch.cuda.is_available())
 
 predictions, raw_outputs = model.predict(test_sentences)
 
