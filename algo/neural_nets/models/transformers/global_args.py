@@ -4,9 +4,9 @@ TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-cased"
-HASOC_TRANSFER_LEARNING = True
+MODEL_TYPE = "roberta"
+MODEL_NAME = "roberta-large"
+HASOC_TRANSFER_LEARNING = False
 
 global_args = {
     'output_dir': 'temp/outputs/',
@@ -26,15 +26,15 @@ global_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': False,
+    'do_lower_case': True,
 
     'logging_steps': 50,
-    'save_steps': 500,
+    'save_steps': 100,
     "no_cache": False,
     'save_model_every_epoch': True,
     'evaluate_during_training': True,
-    'evaluate_during_training_steps': 500,
-    "evaluate_during_training_verbose": False,
+    'evaluate_during_training_steps': 100,
+    "evaluate_during_training_verbose": True,
     'use_cached_eval_features': True,
     'save_eval_checkpoints': True,
     'tensorboard_dir': None,
