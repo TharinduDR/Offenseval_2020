@@ -13,16 +13,17 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from transformers import BertModel
 
-from logginghandler import TQDMLoggingHandler
-from neural_nets.common.run_model import fit, threshold_search, predict
-from neural_nets.common.utility import print_model, draw_graph, evaluatation_scores
-from neural_nets.models.bert.model import BERTGRU
-from neural_nets.models.bert.model_config import TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, SPLIT_RATIO, BATCH_SIZE, \
+from algo.neural_nets.common.run_model import fit, threshold_search, predict
+from algo.neural_nets.common.utility import print_model, draw_graph, evaluatation_scores
+from algo.neural_nets.models.bert.model import BERTGRU
+from algo.neural_nets.models.bert.model_config import TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, SPLIT_RATIO, \
+    BATCH_SIZE, \
     ENGLISH_BERT_MODEL, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, REDUCE_LEARNING_RATE_FACTOR, MODEL_PATH, \
     N_EPOCHS, \
     MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR
-from neural_nets.models.bert.utility import get_tokenizer, tokenize_and_cut
+from algo.neural_nets.models.bert.utility import get_tokenizer, tokenize_and_cut
 from project_config import SEED, ENGLISH_DATA_PATH
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
