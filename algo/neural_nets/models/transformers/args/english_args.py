@@ -1,16 +1,17 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "hasoc_temp/data"
+TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-cased"
+MODEL_TYPE = "xlm"
+MODEL_NAME = "xlm-mlm-en-2048"
+HASOC_TRANSFER_LEARNING = False
 
-hasoc_args = {
-    'output_dir': 'hasoc_temp/outputs/',
-    "best_model_dir": "hasoc_temp/outputs/best_model",
-    'cache_dir': 'hasoc_temp/cache_dir/',
+english_args = {
+    'output_dir': 'temp/outputs/',
+    "best_model_dir": "temp/outputs/best_model",
+    'cache_dir': 'temp/cache_dir/',
 
     'fp16': False,
     'fp16_opt_level': 'O1',
@@ -25,7 +26,7 @@ hasoc_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': False,
+    'do_lower_case': True,
 
     'logging_steps': 50,
     'save_steps': 100,
@@ -46,7 +47,7 @@ hasoc_args = {
     'use_multiprocessing': True,
     'silent': False,
 
-    'wandb_project': "HASOC_2019",
+    'wandb_project': None,
     'wandb_kwargs': {},
 
     "use_early_stopping": True,

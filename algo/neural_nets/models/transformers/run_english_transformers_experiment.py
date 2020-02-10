@@ -9,9 +9,9 @@ from sklearn.preprocessing import LabelEncoder
 
 from algo.neural_nets.common.english_preprocessing import remove_words
 from algo.neural_nets.common.utility import evaluatation_scores
-from algo.neural_nets.models.transformers.global_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
-    global_args, HASOC_TRANSFER_LEARNING
-from algo.neural_nets.models.transformers.hasoc_args import hasoc_args
+from algo.neural_nets.models.transformers.args.english_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
+    english_args, HASOC_TRANSFER_LEARNING
+from algo.neural_nets.models.transformers.args.hasoc_args import hasoc_args
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from project_config import SEED, ENGLISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
@@ -43,17 +43,17 @@ test['text'] = test['text'].apply(lambda x: remove_words(x))
 
 # Create a ClassificationModel
 if HASOC_TRANSFER_LEARNING:
-    model = ClassificationModel(MODEL_TYPE, hasoc_args['best_model_dir'], args=global_args,
+    model = ClassificationModel(MODEL_TYPE, hasoc_args['best_model_dir'], args=english_args,
                                 use_cuda=torch.cuda.is_available())
 
 else:
-    model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=global_args,
+    model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=english_args,
                                 use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
 logging.info("Started Training")
 
-if global_args["evaluate_during_training"]:
+if english_args["evaluate_during_training"]:
     train, eval_df = train_test_split(train, test_size=0.1, random_state=SEED)
     model.train_model(train, eval_df=eval_df)
 
@@ -64,8 +64,8 @@ logging.info("Finished Training")
 # Evaluate the model
 test_sentences = test['text'].tolist()
 
-if global_args["evaluate_during_training"]:
-    model = ClassificationModel(MODEL_TYPE, global_args["best_model_dir"], args=global_args, use_cuda=torch.cuda.is_available())
+if english_args["evaluate_during_training"]:
+    model = ClassificationModel(MODEL_TYPE, english_args["best_model_dir"], args=english_args, use_cuda=torch.cuda.is_available())
 
 predictions, raw_outputs = model.predict(test_sentences)
 

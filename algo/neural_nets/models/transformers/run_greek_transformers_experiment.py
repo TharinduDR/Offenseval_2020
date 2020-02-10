@@ -7,12 +7,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.english_preprocessing import remove_names, remove_urls
+from algo.neural_nets.common.greek_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
-from algo.neural_nets.models.transformers.args.hasoc_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
-from algo.neural_nets.models.transformers.args.hasoc_args import hasoc_args
+from algo.neural_nets.models.transformers.args.english_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
+from algo.neural_nets.models.transformers.args.greek_args import greek_args
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
-from project_config import SEED, HASOC_DATA_PATH
+from project_config import SEED, GREEK_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -26,30 +26,29 @@ torch.backends.cudnn.deterministic = True
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(HASOC_DATA_PATH, sep='\t')
+full = pd.read_csv(GREEK_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
-train['label'] = le.fit_transform(train["task_1"])
+train['label'] = le.fit_transform(train["subtask_a"])
+train['text'] = train["tweet"]
 train = train[['text', 'label']]
-train['text'] = train['text'].apply(lambda x: remove_names(x))
-train['text'] = train['text'].apply(lambda x: remove_urls(x))
+train['text'] = train['text'].apply(lambda x: transformer_pipeline(x))
 
-test['label'] = le.fit_transform(test["task_1"])
+test['label'] = le.fit_transform(test["subtask_a"])
+test['text'] = test["tweet"]
 test = test[['text', 'label']]
-test['text'] = test['text'].apply(lambda x: remove_names(x))
-test['text'] = test['text'].apply(lambda x: remove_urls(x))
+test['text'] = test['text'].apply(lambda x: transformer_pipeline(x))
 
-# Create a ClassificationModel
-model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=hasoc_args,
-                            use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
+model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=greek_args,
+                                use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
 logging.info("Started Training")
 
-if hasoc_args["evaluate_during_training"]:
+if greek_args["evaluate_during_training"]:
     train, eval_df = train_test_split(train, test_size=0.1, random_state=SEED)
-    model.train_model(train, eval_df=eval_df, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
+    model.train_model(train, eval_df=eval_df)
 
 else:
     model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
@@ -58,9 +57,8 @@ logging.info("Finished Training")
 # Evaluate the model
 test_sentences = test['text'].tolist()
 
-if hasoc_args["evaluate_during_training"]:
-    model = ClassificationModel(MODEL_TYPE, hasoc_args["best_model_dir"], args=hasoc_args,
-                                use_cuda=torch.cuda.is_available())
+if greek_args["evaluate_during_training"]:
+    model = ClassificationModel(MODEL_TYPE, greek_args["best_model_dir"], args=greek_args, use_cuda=torch.cuda.is_available())
 
 predictions, raw_outputs = model.predict(test_sentences)
 

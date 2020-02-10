@@ -4,11 +4,10 @@ TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "roberta"
-MODEL_NAME = "roberta-large"
-HASOC_TRANSFER_LEARNING = False
+MODEL_TYPE = "bert"
+MODEL_NAME = "bert-base-multilingual-cased"
 
-global_args = {
+greek_args = {
     'output_dir': 'temp/outputs/',
     "best_model_dir": "temp/outputs/best_model",
     'cache_dir': 'temp/cache_dir/',

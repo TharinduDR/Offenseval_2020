@@ -1,8 +1,10 @@
 import re
 
-from logginghandler import TQDMLoggingHandler
+
 import logging
 import spacy
+
+from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
@@ -14,6 +16,12 @@ nlp = spacy.load('el_core_news_md', disable=['parser', 'tagger', 'ner'])
 
 def tokenizer(x):
     return [w.text.lower() for w in nlp(x) if not w.is_stop]
+
+
+def remove_words(x):
+    x = x.replace('@USER', '')
+    x = x.replace('URL', '')
+    return x
 
 
 def clean_text(x):
@@ -73,6 +81,15 @@ def normalize(x):
     x = x.replace('ό', 'ο')
     x = replaceMultiple(x, ['ύ', 'ΰ', 'ϋ'], 'υ')
     x = x.replace('ώ', 'ω')
+    return x
+
+
+def transformer_pipeline(x):
+    x = remove_words(x)
+    x = clean_text(x)
+    x = sep_digits(x)
+    x = normalize(x)
+
     return x
 
 
