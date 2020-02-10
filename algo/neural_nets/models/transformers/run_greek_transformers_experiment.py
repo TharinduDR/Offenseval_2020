@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from algo.neural_nets.common.greek_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
-from algo.neural_nets.models.transformers.args.english_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
+from algo.neural_nets.models.transformers.args.greek_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
 from algo.neural_nets.models.transformers.args.greek_args import greek_args
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
 from project_config import SEED, GREEK_DATA_PATH
@@ -41,7 +41,7 @@ test = test[['text', 'label']]
 test['text'] = test['text'].apply(lambda x: transformer_pipeline(x))
 
 model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=greek_args,
-                                use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
+                            use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
 
 # Train the model
 logging.info("Started Training")
@@ -58,7 +58,8 @@ logging.info("Finished Training")
 test_sentences = test['text'].tolist()
 
 if greek_args["evaluate_during_training"]:
-    model = ClassificationModel(MODEL_TYPE, greek_args["best_model_dir"], args=greek_args, use_cuda=torch.cuda.is_available())
+    model = ClassificationModel(MODEL_TYPE, greek_args["best_model_dir"], args=greek_args,
+                                use_cuda=torch.cuda.is_available())
 
 predictions, raw_outputs = model.predict(test_sentences)
 
