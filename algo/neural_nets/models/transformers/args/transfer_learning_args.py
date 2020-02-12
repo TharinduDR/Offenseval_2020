@@ -6,7 +6,7 @@ TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "xlnet"
 MODEL_NAME = "xlnet-base-cased"
-CUT_OFF = 0.01
+CUT_OFF = 0.2
 
 transfer_learning_args = {
     'output_dir': 'transfer_learning_temp/outputs/',
