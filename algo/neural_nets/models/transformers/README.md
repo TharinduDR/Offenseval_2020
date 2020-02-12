@@ -6,6 +6,15 @@ This folder includes the different experiments we did with Transformers for Offe
 | Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
 | ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
 | bert-large-cased                                                           | 0.7749    | 0.7626      | 0.7243   | 0.7749         |  0.7703           | 1593 436 160 459 |
+| bert-base-cased                                                            | 0.7870    | 0.7856      | 0.7590   | 0.7870         |  0.7847           | 1493 304 260 591 |
 | roberta-base                                                               | 0.7874    | 0.7850      | 0.7574   | 0.7874         |  0.7840           | 1508 318 245 577 |
 | xlnet-base-cased                                                           | 0.7851    | 0.7841      | 0.7578   | 0.7851         |  0.7834           | 1484 300 269 595 |
+
+
+#### Greek Experiments
+
+| Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
+| ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
+| bert-multilingual-cased                                                    | 0.8325    | 0.8239      | 0.7714   | 0.8325         |  0.8266           | 1180 210 83 276 |
+| distilbert-multilingual-cased                                              | 0.8399    | 0.8315      | 0.7810   | 0.8399         |  0.8351           | 1188 205 75 281 |
 
