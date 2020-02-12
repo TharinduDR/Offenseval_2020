@@ -1,6 +1,6 @@
-def filter_supportfile(df):
+def filter_supportfile(df, threshold):
     df['subtask_a'] = df["average"].apply(lambda x: label(x))
-    filtered_df = df.loc[(df['std'] < 0.1)]
+    filtered_df = df.loc[(df['std'] < threshold)]
     return filtered_df
 
 
