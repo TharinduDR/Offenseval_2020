@@ -7,6 +7,7 @@ RESULT_FILE = "result.tsv"
 MODEL_TYPE = "xlm"
 MODEL_NAME = "xlm-mlm-en-2048"
 HASOC_TRANSFER_LEARNING = False
+USE_DISTANT_LEARNING = True
 
 english_args = {
     'output_dir': 'temp/outputs/',

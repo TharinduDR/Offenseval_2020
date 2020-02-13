@@ -1,16 +1,14 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "greek_temp/data"
+TEMP_DIRECTORY = "hasoc_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-multilingual-cased"
 
 hasoc_args = {
-    'output_dir': 'greek_temp/outputs/',
-    "best_model_dir": "greek_temp/outputs/best_model",
-    'cache_dir': 'greek_temp/cache_dir/',
+    'output_dir': 'hasoc_temp/outputs/',
+    "best_model_dir": "hasoc_temp/outputs/best_model",
+    'cache_dir': 'hasoc_temp/cache_dir/',
 
     'fp16': False,
     'fp16_opt_level': 'O1',

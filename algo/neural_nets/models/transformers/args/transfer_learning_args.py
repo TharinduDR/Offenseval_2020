@@ -4,9 +4,7 @@ TEMP_DIRECTORY = "transfer_learning_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "xlnet"
-MODEL_NAME = "xlnet-base-cased"
-CUT_OFF = 0.2
+CUT_OFF = 0.05
 
 transfer_learning_args = {
     'output_dir': 'transfer_learning_temp/outputs/',

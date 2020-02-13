@@ -10,9 +10,11 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.english_preprocessing import remove_words
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.english_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
-    english_args, HASOC_TRANSFER_LEARNING
-from algo.neural_nets.models.transformers.args.hasoc_args import hasoc_args
+    english_args, HASOC_TRANSFER_LEARNING, USE_DISTANT_LEARNING
+from algo.neural_nets.models.transformers.run_hasoc_transformers_experiment import run_hasoc_experiment
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.run_transfer_learning_transformers_experiment import \
+    run_transfer_learning_experiment
 from project_config import SEED, ENGLISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -43,7 +45,13 @@ test['text'] = test['text'].apply(lambda x: remove_words(x))
 
 # Create a ClassificationModel
 if HASOC_TRANSFER_LEARNING:
-    model = ClassificationModel(MODEL_TYPE, hasoc_args['best_model_dir'], args=english_args,
+    model_dir = run_hasoc_experiment()
+    model = ClassificationModel(MODEL_TYPE, model_dir, args=english_args,
+                                use_cuda=torch.cuda.is_available())
+
+elif USE_DISTANT_LEARNING:
+    model_dir = run_transfer_learning_experiment()
+    model = ClassificationModel(MODEL_TYPE, model_dir, args=english_args,
                                 use_cuda=torch.cuda.is_available())
 
 else:
@@ -65,7 +73,8 @@ logging.info("Finished Training")
 test_sentences = test['text'].tolist()
 
 if english_args["evaluate_during_training"]:
-    model = ClassificationModel(MODEL_TYPE, english_args["best_model_dir"], args=english_args, use_cuda=torch.cuda.is_available())
+    model = ClassificationModel(MODEL_TYPE, english_args["best_model_dir"], args=english_args,
+                                use_cuda=torch.cuda.is_available())
 
 predictions, raw_outputs = model.predict(test_sentences)
 
