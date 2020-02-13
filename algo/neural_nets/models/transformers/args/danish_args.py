@@ -1,18 +1,16 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "temp/data"
+TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-cased"
-HASOC_TRANSFER_LEARNING = True
-USE_DISTANT_LEARNING = False
+MODEL_NAME = "bert-base-multilingual-cased"
 
-english_args = {
-    'output_dir': 'temp/outputs/',
-    "best_model_dir": "temp/outputs/best_model",
-    'cache_dir': 'temp/cache_dir/',
+danish_args = {
+    'output_dir': 'danish_temp/outputs/',
+    "best_model_dir": "danish_temp/outputs/best_model",
+    'cache_dir': 'danish_temp/cache_dir/',
 
     'fp16': False,
     'fp16_opt_level': 'O1',
