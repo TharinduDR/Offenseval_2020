@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
 
-from algo.neural_nets.common.preprocessing.english_preprocessing import pipeline
+from algo.neural_nets.common.preprocessing.greek_preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
 from algo.neural_nets.models.rnn.common.model import RNN

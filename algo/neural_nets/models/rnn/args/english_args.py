@@ -1,5 +1,4 @@
 TEMP_DIRECTORY = "temp/data"
-TEMP_DIRECTORY_TL = "temp_tl/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
