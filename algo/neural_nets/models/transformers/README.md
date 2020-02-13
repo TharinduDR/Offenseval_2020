@@ -18,3 +18,11 @@ This folder includes the different experiments we did with Transformers for Offe
 | bert-multilingual-cased                                                    | 0.8325    | 0.8239      | 0.7714   | 0.8325         |  0.8266           | 1180 210 83 276 |
 | distilbert-multilingual-cased                                              | 0.8399    | 0.8315      | 0.7810   | 0.8399         |  0.8351           | 1188 205 75 281 |
 
+
+#### Danish Experiments
+
+| Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
+| ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
+| bert-multilingual-cased                                                    | 0.9122    | 0.8942      | 0.7305   | 0.9121         |  0.9138           | 513 50 2 27     |
+| distilbert-multilingual-cased                                              | 0.8399    | 0.8315      | 0.7810   | 0.8399         |  0.8351           | 1188 205 75 281 |
+

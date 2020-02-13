@@ -1,16 +1,16 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "greek_temp/data"
+TEMP_DIRECTORY = "arabic_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
 MODEL_NAME = "bert-base-multilingual-cased"
 
-greek_args = {
-    'output_dir': 'greek_temp/outputs/',
-    "best_model_dir": "greek_temp/outputs/best_model",
-    'cache_dir': 'greek_temp/cache_dir/',
+arabic_args = {
+    'output_dir': 'arabic_temp/outputs/',
+    "best_model_dir": "arabic_temp/outputs/best_model",
+    'cache_dir': 'arabic_temp/cache_dir/',
 
     'fp16': False,
     'fp16_opt_level': 'O1',

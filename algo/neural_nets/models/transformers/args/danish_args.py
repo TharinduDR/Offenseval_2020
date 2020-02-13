@@ -25,7 +25,7 @@ danish_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': True,
+    'do_lower_case': False,
 
     'logging_steps': 50,
     'save_steps': 100,
