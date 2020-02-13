@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from algo.neural_nets.models.cnn.model_config import DROPOUT, KERNEL_NUM, FIXED_LENGTH, KERNEL_SIZE
+from algo.neural_nets.models.cnn.args.english_args import DROPOUT, KERNEL_NUM, FIXED_LENGTH, KERNEL_SIZE
 
 
 class CNN(nn.Module):
