@@ -7,7 +7,6 @@ TRANSFER_LEARNING = True
 MODEL_PATH = "temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"
-ENGLISH_EMBEDDING_PATH = '/data/fasttext/crawl-300d-2M-subword.vec'
 GREEK_EMBEDDING_PATH = '/data/fasttext/grcorpus_def.vec'
 MAX_SIZE = None
 SPLIT_RATIO = 0.9
