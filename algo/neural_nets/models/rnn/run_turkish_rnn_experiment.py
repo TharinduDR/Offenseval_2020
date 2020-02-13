@@ -13,11 +13,11 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
 
-from algo.neural_nets.common.preprocessing.greek_preprocessing import pipeline
+
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
 from algo.neural_nets.models.rnn.common.model import RNN
-from algo.neural_nets.models.rnn.args.turkish_args import SPLIT_RATIO, BATCH_SIZE, \
+from algo.neural_nets.models.rnn.args.danish_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
     TURKISH_EMBEDDING_PATH
