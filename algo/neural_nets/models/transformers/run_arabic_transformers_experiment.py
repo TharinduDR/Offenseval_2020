@@ -7,11 +7,11 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.arabic_preprocessing import transformer_pipeline
+from algo.neural_nets.common.preprocessing.arabic_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.arabic_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, \
     RESULT_FILE, arabic_args
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, ARABIC_TRAINING_PATH, ARABIC_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 

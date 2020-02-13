@@ -7,12 +7,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.english_preprocessing import remove_words
+from algo.neural_nets.common.preprocessing.english_preprocessing import remove_words
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.english_args import MODEL_TYPE, MODEL_NAME
 from algo.neural_nets.models.transformers.args.transfer_learning_args import TEMP_DIRECTORY, RESULT_FILE, \
     transfer_learning_args, CUT_OFF
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, SUPPORT_ENGLISH_DATA_PATH
 from util.filtering import filter_supportfile
 from util.logginghandler import TQDMLoggingHandler

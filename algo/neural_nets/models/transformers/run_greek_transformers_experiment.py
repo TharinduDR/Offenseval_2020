@@ -7,11 +7,11 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.greek_preprocessing import transformer_pipeline
+from algo.neural_nets.common.preprocessing.greek_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.greek_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME
 from algo.neural_nets.models.transformers.args.greek_args import greek_args
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, GREEK_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 

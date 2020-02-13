@@ -7,12 +7,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.english_preprocessing import remove_names, remove_urls
+from algo.neural_nets.common.preprocessing.english_preprocessing import remove_names, remove_urls
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.english_args import MODEL_TYPE, MODEL_NAME
 from algo.neural_nets.models.transformers.args.hasoc_args import TEMP_DIRECTORY, RESULT_FILE
 from algo.neural_nets.models.transformers.args.hasoc_args import hasoc_args
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, HASOC_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 

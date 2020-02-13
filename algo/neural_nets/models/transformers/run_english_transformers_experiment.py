@@ -7,12 +7,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.english_preprocessing import remove_words
+from algo.neural_nets.common.preprocessing.english_preprocessing import remove_words
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.english_args import TEMP_DIRECTORY, RESULT_FILE, MODEL_TYPE, MODEL_NAME, \
     english_args, HASOC_TRANSFER_LEARNING, USE_DISTANT_LEARNING
 from algo.neural_nets.models.transformers.run_hasoc_transformers_experiment import run_hasoc_experiment
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from algo.neural_nets.models.transformers.run_transfer_learning_transformers_experiment import \
     run_transfer_learning_experiment
 from project_config import SEED, ENGLISH_DATA_PATH

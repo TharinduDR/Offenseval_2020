@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from nltk.corpus import stopwords
-from wordcloud import WordCloud, STOPWORDS
+from wordcloud import WordCloud
 
-from algo.neural_nets.common.english_preprocessing import clean_numbers, clean_text, remove_words
+from algo.neural_nets.common.preprocessing.english_preprocessing import clean_numbers, clean_text, remove_words
 
 english_stopwords = set(stopwords.words('english'))
 

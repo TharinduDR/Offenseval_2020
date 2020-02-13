@@ -7,11 +7,11 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from algo.neural_nets.common.danish_preprocessing import transformer_pipeline
+from algo.neural_nets.common.preprocessing.danish_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.turkish_args import turkish_args
 from algo.neural_nets.models.transformers.args.turkish_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, RESULT_FILE
-from algo.neural_nets.models.transformers.run_model import ClassificationModel
+from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, TURKISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 

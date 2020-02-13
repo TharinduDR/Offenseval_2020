@@ -43,7 +43,7 @@ from algo.neural_nets.models.transformers.models.roberta_model import RobertaFor
 from algo.neural_nets.models.transformers.models.xlm_model import XLMForSequenceClassification
 from algo.neural_nets.models.transformers.models.xlm_roberta_model import XLMRobertaForSequenceClassification
 from algo.neural_nets.models.transformers.models.xlnet_model import XLNetForSequenceClassification
-from algo.neural_nets.models.transformers.utils import InputExample, convert_examples_to_features
+from algo.neural_nets.models.transformers.common.utils import InputExample, convert_examples_to_features
 
 
 class ClassificationModel:
