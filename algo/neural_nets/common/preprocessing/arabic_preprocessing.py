@@ -1,5 +1,7 @@
 import re
 
+def tokenizer(x):
+    return [w.lower() for w in x.split()]
 
 def clean_text(x):
     puncts = [',', '.', '"', ':', ')', '(', '-', '!', '?', '|', ';', "'", '$', '&', '/', '[', ']', '>', '%', '=', '#',
@@ -59,3 +61,10 @@ def transformer_pipeline(x):
     x = normalize(x)
 
     return x
+
+
+def pipeline(x):
+    x = remove_words(x)
+    x = clean_text(x)
+    x = normalize(x)
+    return tokenizer(x)
