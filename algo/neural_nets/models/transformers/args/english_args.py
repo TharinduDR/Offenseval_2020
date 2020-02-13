@@ -4,8 +4,8 @@ TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "xlm"
-MODEL_NAME = "xlm-mlm-en-2048"
+MODEL_TYPE = "bert"
+MODEL_NAME = "bert-base-cased"
 HASOC_TRANSFER_LEARNING = False
 USE_DISTANT_LEARNING = True
 

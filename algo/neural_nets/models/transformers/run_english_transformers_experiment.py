@@ -45,11 +45,13 @@ test['text'] = test['text'].apply(lambda x: remove_words(x))
 
 # Create a ClassificationModel
 if HASOC_TRANSFER_LEARNING:
+    logging.info("Started HASOC Transfer Learning")
     model_dir = run_hasoc_experiment()
     model = ClassificationModel(MODEL_TYPE, model_dir, args=english_args,
                                 use_cuda=torch.cuda.is_available())
 
 elif USE_DISTANT_LEARNING:
+    logging.info("Started Distant Transfer Learning")
     model_dir = run_transfer_learning_experiment()
     model = ClassificationModel(MODEL_TYPE, model_dir, args=english_args,
                                 use_cuda=torch.cuda.is_available())
@@ -69,6 +71,7 @@ else:
     model.train_model(train, f1=sklearn.metrics.f1_score, accuracy=sklearn.metrics.accuracy_score)
 
 logging.info("Finished Training")
+
 # Evaluate the model
 test_sentences = test['text'].tolist()
 

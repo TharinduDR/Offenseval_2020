@@ -4,7 +4,7 @@ TEMP_DIRECTORY = "transfer_learning_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-CUT_OFF = 0.05
+CUT_OFF = 0.2
 
 transfer_learning_args = {
     'output_dir': 'transfer_learning_temp/outputs/',
