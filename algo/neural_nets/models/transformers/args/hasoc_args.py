@@ -44,7 +44,7 @@ hasoc_args = {
     'use_multiprocessing': True,
     'silent': False,
 
-    'wandb_project': "HASOC_2019",
+    'wandb_project': None,
     'wandb_kwargs': {},
 
     "use_early_stopping": True,
