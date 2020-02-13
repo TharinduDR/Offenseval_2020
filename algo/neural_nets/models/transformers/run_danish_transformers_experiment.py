@@ -12,7 +12,7 @@ from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.danish_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, danish_args, \
     RESULT_FILE
 from algo.neural_nets.models.transformers.run_model import ClassificationModel
-from project_config import SEED, GREEK_DATA_PATH
+from project_config import SEED, DANISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -26,10 +26,12 @@ torch.backends.cudnn.deterministic = True
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(GREEK_DATA_PATH, sep='\t')
+full = pd.read_csv(DANISH_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
 train, test = train_test_split(full, test_size=0.2, random_state=SEED)
+print(train.head())
+
 train['label'] = le.fit_transform(train["subtask_a"])
 train['text'] = train["tweet"]
 train = train[['text', 'label']]
