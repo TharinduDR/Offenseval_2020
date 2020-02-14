@@ -23,6 +23,6 @@ This folder includes the different experiments we did with Transformers for Offe
 
 | Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
 | ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
-| bert-multilingual-cased                                                    | 0.9122    | 0.8942      | 0.7305   | 0.9121         |  0.9138           | 513 50 2 27     |
+| bert-multilingual-cased                                                    | 0.9207    | 0.9180      | 0.8131   | 0.9206         |  0.9166           | 497 29 18 48     |
 | distilbert-multilingual-cased                                              | 0.8399    | 0.8315      | 0.7810   | 0.8399         |  0.8351           | 1188 205 75 281 |
 

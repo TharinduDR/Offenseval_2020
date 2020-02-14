@@ -4,8 +4,8 @@ TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-multilingual-cased"
+MODEL_TYPE = "distilbert"
+MODEL_NAME = "distilbert-base-multilingual-cased"
 
 danish_args = {
     'output_dir': 'danish_temp/outputs/',
