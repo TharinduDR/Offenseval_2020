@@ -20,7 +20,7 @@ from algo.neural_nets.models.rnn.common.model import RNN
 from algo.neural_nets.models.rnn.args.arabic_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
-    ARABIC_EMBEDDING_PATH
+    ARABIC_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT
 from project_config import SEED, VECTOR_CACHE, GREEK_DATA_PATH, ARABIC_TRAINING_PATH, ARABIC_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -131,7 +131,8 @@ for i in range(N_FOLD):
     output_dim = 1
     pretrained_embeddings = text_variable.vocab.vectors
 
-    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings)
+    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings, HIDDEN_DIM, BIDIRECTIONAL,
+                N_LAYERS, DROPOUT)
 
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.BCEWithLogitsLoss()

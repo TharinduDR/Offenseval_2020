@@ -13,15 +13,14 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
 
-
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
-from algo.neural_nets.models.rnn.common.model import RNN
 from algo.neural_nets.models.rnn.args.danish_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
-    TURKISH_EMBEDDING_PATH
-from project_config import SEED, VECTOR_CACHE, GREEK_DATA_PATH, TURKISH_DATA_PATH
+    TURKISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT
+from algo.neural_nets.models.rnn.common.model import RNN
+from project_config import SEED, VECTOR_CACHE, TURKISH_DATA_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -130,7 +129,8 @@ for i in range(N_FOLD):
     output_dim = 1
     pretrained_embeddings = text_variable.vocab.vectors
 
-    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings)
+    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings, HIDDEN_DIM, BIDIRECTIONAL,
+                N_LAYERS, DROPOUT)
 
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.BCEWithLogitsLoss()

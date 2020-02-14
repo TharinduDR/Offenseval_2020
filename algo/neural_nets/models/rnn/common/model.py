@@ -3,7 +3,6 @@ import logging
 import torch
 import torch.nn as nn
 
-from algo.neural_nets.models.rnn.model_config import HIDDEN_DIM, BIDIRECTIONAL, DROPOUT, N_LAYERS
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -13,17 +12,18 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 
 
 class RNN(nn.Module):
-    def __init__(self, vocab_size, embedding_dim, output_dim, pretrained_embeddings):
+    def __init__(self, vocab_size, embedding_dim, output_dim, pretrained_embeddings, hidden_dim, bidirectional,
+                 n_layers, dropout):
         super(RNN, self).__init__()
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data.copy_(pretrained_embeddings)
         self.embedding.weight.requires_grad = False
 
-        self.rnn = nn.LSTM(embedding_dim, HIDDEN_DIM, num_layers=N_LAYERS,
-                          bidirectional=BIDIRECTIONAL, dropout=0 if N_LAYERS < 2 else DROPOUT)
-        self.fc = nn.Linear(HIDDEN_DIM * 2 if BIDIRECTIONAL else HIDDEN_DIM, output_dim)
-        self.dropout = nn.Dropout(DROPOUT)
+        self.rnn = nn.LSTM(embedding_dim, hidden_dim, num_layers=n_layers,
+                           bidirectional=bidirectional, dropout=0 if n_layers < 2 else dropout)
+        self.fc = nn.Linear(hidden_dim * 2 if bidirectional else hidden_dim, output_dim)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         x = self.embedding(x)
