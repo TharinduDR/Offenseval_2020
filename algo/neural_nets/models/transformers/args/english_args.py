@@ -4,8 +4,8 @@ TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-cased"
+MODEL_TYPE = "xlnet"
+MODEL_NAME = "xlnet-base-cased"
 HASOC_TRANSFER_LEARNING = True
 USE_DISTANT_LEARNING = False
 
@@ -20,7 +20,7 @@ english_args = {
     'train_batch_size': 8,
     'gradient_accumulation_steps': 1,
     'eval_batch_size': 8,
-    'num_train_epochs': 3,
+    'num_train_epochs': 1,
     'weight_decay': 0,
     'learning_rate': 4e-5,
     'adam_epsilon': 1e-8,

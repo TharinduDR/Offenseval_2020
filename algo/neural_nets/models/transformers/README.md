@@ -10,6 +10,14 @@ This folder includes the different experiments we did with Transformers for Offe
 | roberta-base                                                               | 0.7874    | 0.7850      | 0.7574   | 0.7874         |  0.7840           | 1508 318 245 577 |
 | xlnet-base-cased                                                           | 0.7851    | 0.7841      | 0.7578   | 0.7851         |  0.7834           | 1484 300 269 595 |
 
+#### English Experiments with HASOC Transfer Learning
+
+| Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
+| ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
+| bert-base-cased                                                            | 0.7802    | 0.7808      | 0.7557   | 0.7802         |  0.7815           | 1452 281 301 614 |
+
+
+
 
 #### Greek Experiments
 

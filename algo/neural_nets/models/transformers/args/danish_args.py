@@ -4,8 +4,8 @@ TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "distilbert"
-MODEL_NAME = "distilbert-base-multilingual-cased"
+MODEL_TYPE = "bert"
+MODEL_NAME = "../../../../../resources/danish_bert_uncased/danish_bert_uncased"
 
 danish_args = {
     'output_dir': 'danish_temp/outputs/',
@@ -25,7 +25,7 @@ danish_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': False,
+    'do_lower_case': True,
 
     'logging_steps': 50,
     'save_steps': 100,
