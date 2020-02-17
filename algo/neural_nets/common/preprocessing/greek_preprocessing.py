@@ -1,7 +1,7 @@
-import re
-
-
 import logging
+import re
+import unicodedata
+
 import spacy
 
 from util.logginghandler import TQDMLoggingHandler
@@ -84,11 +84,17 @@ def normalize(x):
     return x
 
 
+def strip_accents_and_lowercase(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s)
+                   if unicodedata.category(c) != 'Mn').lower()
+
+
 def transformer_pipeline(x):
     x = remove_words(x)
     x = clean_text(x)
     x = sep_digits(x)
     x = normalize(x)
+    x = strip_accents_and_lowercase(x)
 
     return x
 
