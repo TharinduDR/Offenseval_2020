@@ -5,7 +5,7 @@ TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
-MODEL_NAME = "../../../../../resources/danish_bert_uncased/danish_bert_uncased"
+MODEL_NAME = "../../../../resources/danish_bert_uncased_v2"
 
 danish_args = {
     'output_dir': 'danish_temp/outputs/',
