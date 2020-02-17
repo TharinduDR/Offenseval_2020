@@ -5,7 +5,7 @@ TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-multilingual-cased"
+MODEL_NAME = "dbmdz/bert-base-turkish-cased"
 
 turkish_args = {
     'output_dir': 'turkish_temp/outputs/',
