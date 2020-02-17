@@ -17,8 +17,6 @@ This folder includes the different experiments we did with Transformers for Offe
 | bert-base-cased                                                            | 0.7802    | 0.7808      | 0.7557   | 0.7802         |  0.7815           | 1452 281 301 614 |
 
 
-
-
 #### Greek Experiments
 
 | Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
@@ -33,4 +31,11 @@ This folder includes the different experiments we did with Transformers for Offe
 | ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
 | bert-multilingual-cased                                                    | 0.9207    | 0.9180      | 0.8131   | 0.9206         |  0.9166           | 497 29 18 48     |
 | distilbert-multilingual-cased                                              | 0.9222    | 0.9166      | 0.8038   | 0.9222         |  0.9165           | 503 34 12 43     |
+
+#### Turkish Experiments
+
+| Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
+| ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
+| bert-multilingual-cased                                                    | 0.8377    | 0.8255      | 0.7054   | 0.8377         |  0.8225           | 4717 701 314 524 |
+| distilbert-multilingual-cased                                              |           |             |          |                |                   |                  |
 
