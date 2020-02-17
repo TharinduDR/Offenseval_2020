@@ -5,7 +5,7 @@ TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-multilingual-cased"
+MODEL_NAME = "nlpaueb/bert-base-greek-uncased-v1"
 
 greek_args = {
     'output_dir': 'greek_temp/outputs/',
@@ -25,7 +25,7 @@ greek_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': False,
+    'do_lower_case': True,
 
     'logging_steps': 50,
     'save_steps': 100,
