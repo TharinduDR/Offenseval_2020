@@ -1,9 +1,9 @@
-TEMP_DIRECTORY = "temp/data"
+TEMP_DIRECTORY = "greek_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 TRANSFER_LEARNING = True
-MODEL_PATH = "temp"
+MODEL_PATH = "greek_temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"
 GREEK_EMBEDDING_PATH = '/data/fasttext/grcorpus_def.vec'

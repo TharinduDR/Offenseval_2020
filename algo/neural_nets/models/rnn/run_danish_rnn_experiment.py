@@ -54,8 +54,6 @@ train_fields = [
     ('id', None),  # we dont need this, so no processing
     ('tweet', text_variable),  # process it as text
     ('subtask_a', None),  # process it as label
-    ('subtask_b', None),  # we dont need this, so no processing
-    ('subtask_c', None),  # we dont need this, so no processing
     ('encoded_subtask_a', target_variable)
 ]
 
@@ -63,8 +61,6 @@ test_fields = [
     ('id', id_variable),  # we process this as id field
     ('tweet', text_variable),  # process it as text
     ('subtask_a', None),  # process it as label
-    ('subtask_b', None),  # we dont need this, so no processing
-    ('subtask_c', None),  # we dont need this, so no processing
     ('encoded_subtask_a', None)
 ]
 
