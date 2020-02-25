@@ -187,7 +187,7 @@ dev = pd.read_csv(os.path.join(TEMP_DIRECTORY, DEV_FILE), sep='\t')
 dev["predictions"] = (dev_preds.mean(axis=1) > 0.5).astype(int)
 
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
-test["subtask_a"] = (test_preds.mean(axis=1) > 0.5).astype(int)
+test["subtask_a"] = le.inverse_transform((test_preds.mean(axis=1) > 0.5).astype(int))
 
 # Performing the evaluation
 (tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(dev,
