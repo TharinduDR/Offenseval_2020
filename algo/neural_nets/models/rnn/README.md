@@ -11,3 +11,9 @@ This folder includes the different experiments we did with RNNs for DeftEval 202
 | BiGRU - FastText <ul><li>Remove words</li><li>Remove Stop words</li></ul>  | 0.7730    | 0.7756      | 0.7526   | 0.7730         |  0.7803           | 1404 252 349 643 |
 | BiLSTM - FastText <ul><li>Remove words</li><li>Remove Stop words</li></ul> | 0.7704    | 0.7737      | 0.7516   | 0.7704         |  0.7808           | 1384 239 369 656 |
 
+#### GREEK Experiments
+
+| Model                                                                      | Accuracy  | Weighted F1 | Macro F1 | Weighted Recall| Weighted Precision| (tn, fp, fn, tp) |
+| ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
+| BiLSTM- Fasttext                                                           | 0.8536    | 0.8533      | 0.8169   | 0.8536         |  0.8531           | 1138 131 125 355 |
+

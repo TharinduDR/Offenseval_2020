@@ -1,7 +1,9 @@
 TEMP_DIRECTORY = "arabic_temp/data"
 TRAIN_FILE = "train.tsv"
+DEV_FILE = "dev.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+DEV_RESULT_FILE = "dev_result.tsv"
+SUBMISSION_FILE = "result.tsv"
 TRANSFER_LEARNING = True
 MODEL_PATH = "arabic_temp"
 MODEL_NAME = "model.hdfs"

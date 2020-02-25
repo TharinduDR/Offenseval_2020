@@ -56,7 +56,6 @@ def threshold_search(trained_model, valid_iter):
 
 def predict(trained_model, test_iter):
     test_pred = []
-    test_id = []
 
     trained_model.eval()
 
@@ -64,9 +63,8 @@ def predict(trained_model, test_iter):
         for batch in test_iter:
             predictions = trained_model(batch.tweet).squeeze(1)
             test_pred += torch.sigmoid(predictions).cpu().data.numpy().tolist()
-            test_id += batch.id.view(-1).cpu().numpy().tolist()
 
-    return test_pred, test_id
+    return test_pred
 
 
 def train(model, iterator, optimizer, criterion):
