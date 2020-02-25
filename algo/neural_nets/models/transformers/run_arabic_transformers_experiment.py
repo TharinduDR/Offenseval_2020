@@ -10,9 +10,9 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.preprocessing.arabic_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.arabic_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, \
-    RESULT_FILE, arabic_args
+    RESULT_FILE, arabic_args, SUBMISSION_FILE
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
-from project_config import SEED, ARABIC_TRAINING_PATH, ARABIC_TEST_PATH
+from project_config import SEED, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH, ARABIC_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -27,6 +27,7 @@ torch.backends.cudnn.deterministic = True
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
 train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
+dev = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
 test = pd.read_csv(ARABIC_TEST_PATH, sep='\t')
 
 le = LabelEncoder()
@@ -36,9 +37,12 @@ train['text'] = train["tweet"]
 train = train[['text', 'label']]
 train['text'] = train['text'].apply(lambda x: transformer_pipeline(x))
 
-test['label'] = le.fit_transform(test["subtask_a"])
+dev['label'] = le.fit_transform(dev["subtask_a"])
+dev['text'] = dev["tweet"]
+dev = dev[['text', 'label']]
+dev['text'] = dev['text'].apply(lambda x: transformer_pipeline(x))
+
 test['text'] = test["tweet"]
-test = test[['text', 'label']]
 test['text'] = test['text'].apply(lambda x: transformer_pipeline(x))
 
 model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=arabic_args,
@@ -56,21 +60,23 @@ else:
 
 logging.info("Finished Training")
 # Evaluate the model
-test_sentences = test['text'].tolist()
+
+logging.info("Started Evaluation")
+dev_sentences = dev['text'].tolist()
 
 if arabic_args["evaluate_during_training"]:
     model = ClassificationModel(MODEL_TYPE, arabic_args["best_model_dir"], args=arabic_args,
                                 use_cuda=torch.cuda.is_available())
 
-predictions, raw_outputs = model.predict(test_sentences)
+dev_predictions, raw_outputs = model.predict(dev_sentences)
 
-test['predictions'] = predictions
+dev['predictions'] = dev_predictions
 
-(tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
+(tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(dev,
                                                                                                              'label',
                                                                                                              "predictions")
 
-test.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+dev.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
@@ -78,3 +84,20 @@ logging.info("Weighted F1 {}".format(weighted_f1))
 logging.info("Macro F1 {}".format(macro_f1))
 logging.info("Weighted Recall {}".format(weighted_recall))
 logging.info("Weighted Precision {}".format(weighted_precision))
+
+logging.info("Finished Evaluation")
+
+logging.info("Started Testing")
+test_sentences = test['text'].tolist()
+
+if arabic_args["evaluate_during_training"]:
+    model = ClassificationModel(MODEL_TYPE, arabic_args["best_model_dir"], args=arabic_args,
+                                use_cuda=torch.cuda.is_available())
+
+test_predictions, raw_outputs = model.predict(test_sentences)
+
+test['subtask_a'] = le.inverse_transform(test_predictions)
+test = test[['id', 'tweet', 'subtask_a']]
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
+logging.info("Finished Testing")

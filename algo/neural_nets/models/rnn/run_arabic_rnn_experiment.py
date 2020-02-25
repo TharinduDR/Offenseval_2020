@@ -21,7 +21,7 @@ from algo.neural_nets.models.rnn.args.arabic_args import SPLIT_RATIO, BATCH_SIZE
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
     ARABIC_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT
-from project_config import SEED, VECTOR_CACHE, GREEK_DATA_PATH, ARABIC_TRAINING_PATH, ARABIC_TEST_PATH
+from project_config import SEED, VECTOR_CACHE, GREEK_DATA_PATH, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -37,7 +37,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
 train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
-test = pd.read_csv(ARABIC_TEST_PATH, sep='\t')
+test = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
 
 le = LabelEncoder()
 train['encoded_subtask_a'] = le.fit_transform(train["subtask_a"])
