@@ -20,7 +20,7 @@ from algo.neural_nets.models.cnn.args.greek_args import SPLIT_RATIO, GREEK_EMBED
     MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE
 from algo.neural_nets.models.cnn.common.model import CNN
-from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE
+from project_config import SEED, GREEK_DATA_PATH, VECTOR_CACHE
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -35,7 +35,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(ENGLISH_DATA_PATH, sep='\t')
+full = pd.read_csv(GREEK_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
 full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])

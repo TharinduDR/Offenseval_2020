@@ -20,7 +20,7 @@ from algo.neural_nets.models.cnn.common.model import CNN
 from algo.neural_nets.models.cnn.args.arabic_args import SPLIT_RATIO, ARABIC_EMBEDDING_PATH, BATCH_SIZE, \
     MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE
-from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE
+from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -35,11 +35,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-full = pd.read_csv(ENGLISH_DATA_PATH, sep='\t')
+train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
+test = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
 
 le = LabelEncoder()
-full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
-train, test = train_test_split(full, test_size=0.2, random_state=SEED)
+train['encoded_subtask_a'] = le.fit_transform(train["subtask_a"])
+test['encoded_subtask_a'] = le.fit_transform(test["subtask_a"])
 
 train.to_csv(os.path.join(TEMP_DIRECTORY, TRAIN_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 test.to_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
