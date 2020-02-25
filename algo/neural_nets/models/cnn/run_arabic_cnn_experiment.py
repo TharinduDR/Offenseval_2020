@@ -7,20 +7,20 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
 from torchtext import vocab
 
 from algo.neural_nets.common.preprocessing.arabic_preprocessing import pipeline
-from algo.neural_nets.common.run_model import fit, predict, threshold_search
-from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
-from algo.neural_nets.models.rnn.args.arabic_args import SPLIT_RATIO, BATCH_SIZE, \
-    N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
-    REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE, \
-    ARABIC_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT
-from algo.neural_nets.models.rnn.common.model import RNN
-from project_config import SEED, VECTOR_CACHE, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH
+from algo.neural_nets.common.run_model import threshold_search, predict, fit
+from algo.neural_nets.common.utility import evaluatation_scores, print_model
+from algo.neural_nets.models.cnn.common.model import CNN
+from algo.neural_nets.models.cnn.args.arabic_args import SPLIT_RATIO, ARABIC_EMBEDDING_PATH, BATCH_SIZE, \
+    MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
+    REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE
+from project_config import SEED, ENGLISH_DATA_PATH, VECTOR_CACHE
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -35,18 +35,17 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 
-train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
-test = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
+full = pd.read_csv(ENGLISH_DATA_PATH, sep='\t')
 
 le = LabelEncoder()
-train['encoded_subtask_a'] = le.fit_transform(train["subtask_a"])
-test['encoded_subtask_a'] = le.fit_transform(test["subtask_a"])
+full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
+train, test = train_test_split(full, test_size=0.2, random_state=SEED)
 
 train.to_csv(os.path.join(TEMP_DIRECTORY, TRAIN_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 test.to_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 id_variable = data.Field()
-text_variable = data.Field(tokenize=pipeline)
+text_variable = data.Field(batch_first=True, tokenize=pipeline, fix_length=FIXED_LENGTH)
 target_variable = data.LabelField(dtype=torch.float)
 
 train_fields = [
@@ -94,7 +93,7 @@ for i in range(N_FOLD):
 
     # Build the vocabulary using only the train dataset?,
     # and also by specifying the pretrained embedding
-    text_variable.build_vocab(train_data, test_data, valid_data, vectors=vec, max_size=None)
+    text_variable.build_vocab(train_data, vectors=vec, max_size=None)
     target_variable.build_vocab(train_data)
     id_variable.build_vocab(test_data)
 
@@ -126,8 +125,8 @@ for i in range(N_FOLD):
     output_dim = 1
     pretrained_embeddings = text_variable.vocab.vectors
 
-    model = RNN(input_dim, embedding_dim, output_dim, pretrained_embeddings, HIDDEN_DIM, BIDIRECTIONAL,
-                N_LAYERS, DROPOUT)
+    model = CNN(text_variable.vocab.stoi[text_variable.pad_token], input_dim, embedding_dim, output_dim,
+                pretrained_embeddings)
 
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     criterion = nn.BCEWithLogitsLoss()
@@ -142,15 +141,10 @@ for i in range(N_FOLD):
     criterion = criterion.to(device)
 
     trained_model, trained_losses, valid_losses = fit(model, train_iter, valid_iter, optimizer, criterion, scheduler,
-                                                      N_EPOCHS, os.path.join(path, MODEL_NAME), GRADUALLY_UNFREEZE,
-                                                      FREEZE_FOR)
-
-    draw_graph(n_epohs=N_EPOCHS, valid_losses=valid_losses, trained_losses=trained_losses,
-               path=os.path.join(path, GRAPH_NAME))
+                                                      N_EPOCHS, os.path.join(path, MODEL_NAME), GRADUALLY_UNFREEZE, FREEZE_FOR)
 
     delta = threshold_search(trained_model, valid_iter)
     test_pred, test_id = predict(trained_model, test_iter)
-
     test_preds[:, i] = (np.array(test_pred) >= delta).astype(int)
 
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
@@ -158,8 +152,8 @@ test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
 
 # Performing the evaluation
 (tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
-                                                                                                             'encoded_subtask_a',
-                                                                                                             "predictions")
+                                                                                                   'encoded_subtask_a',
+                                                                                                   "predictions")
 
 test.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 

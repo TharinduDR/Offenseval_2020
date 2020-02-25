@@ -1,11 +1,11 @@
-TEMP_DIRECTORY = "english_temp/data"
+TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_PATH = "english_temp"
+MODEL_PATH = "danish_temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"
-ENGLISH_EMBEDDING_PATH = '/data/fasttext/crawl-300d-2M-subword.vec'
+DANISH_EMBEDDING_PATH = '/data/fasttext/crawl-300d-2M-subword.vec'
 MAX_SIZE = None
 MAX_LEN = 70
 SPLIT_RATIO = 0.9
