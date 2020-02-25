@@ -4,8 +4,8 @@ TEMP_DIRECTORY = "arabic_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
-MODEL_TYPE = "bert"
-MODEL_NAME = "bert-base-multilingual-cased"
+MODEL_TYPE = "distilbert"
+MODEL_NAME = "distilbert-base-multilingual-cased"
 
 arabic_args = {
     'output_dir': 'arabic_temp/outputs/',
@@ -18,7 +18,7 @@ arabic_args = {
     'train_batch_size': 8,
     'gradient_accumulation_steps': 1,
     'eval_batch_size': 8,
-    'num_train_epochs': 1,
+    'num_train_epochs': 3,
     'weight_decay': 0,
     'learning_rate': 4e-5,
     'adam_epsilon': 1e-8,

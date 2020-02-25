@@ -3,9 +3,10 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+DEV_RESULT_FILE = "result.tsv"
+SUBMISSION_FILE = "result.tsv"
 MODEL_TYPE = "bert"
-MODEL_NAME = "../../../../resources/danish_bert_uncased_v2"
+MODEL_NAME = "bert-base-multilingual-cased"
 
 danish_args = {
     'output_dir': 'danish_temp/outputs/',
@@ -25,7 +26,7 @@ danish_args = {
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
     'max_grad_norm': 1.0,
-    'do_lower_case': True,
+    'do_lower_case': False,
 
     'logging_steps': 50,
     'save_steps': 100,

@@ -3,7 +3,8 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "turkish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+DEV_RESULT_FILE = "dev_result.tsv"
+SUBMISSION_FILE = "result.tsv"
 MODEL_TYPE = "bert"
 MODEL_NAME = "dbmdz/bert-base-turkish-cased"
 

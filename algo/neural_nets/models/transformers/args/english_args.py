@@ -5,9 +5,9 @@ TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
 RESULT_FILE = "result.tsv"
 MODEL_TYPE = "xlnet"
-MODEL_NAME = "xlnet-base-cased"
+MODEL_NAME = "xlnet-large-cased"
 HASOC_TRANSFER_LEARNING = False
-USE_DISTANT_LEARNING = True
+USE_DISTANT_LEARNING = False
 
 english_args = {
     'output_dir': 'temp/outputs/',
@@ -17,12 +17,12 @@ english_args = {
     'fp16': False,
     'fp16_opt_level': 'O1',
     'max_seq_length': 128,
-    'train_batch_size': 8,
+    'train_batch_size': 32,
     'gradient_accumulation_steps': 1,
     'eval_batch_size': 8,
     'num_train_epochs': 3,
     'weight_decay': 0,
-    'learning_rate': 4e-5,
+    'learning_rate': 1e-5,
     'adam_epsilon': 1e-8,
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
@@ -36,7 +36,7 @@ english_args = {
     'evaluate_during_training': True,
     'evaluate_during_training_steps': 100,
     "evaluate_during_training_verbose": True,
-    'use_cached_eval_features': True,
+    'use_cached_eval_features': False,
     'save_eval_checkpoints': True,
     'tensorboard_dir': None,
 
