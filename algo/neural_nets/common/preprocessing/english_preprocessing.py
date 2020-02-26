@@ -61,6 +61,12 @@ def clean_numbers(x):
     return x
 
 
+def transformer_pipeline(x):
+    x = remove_words(x)
+    x = remove_urls(x)
+    return x
+
+
 def pipeline(x):
     x = clean_text(x)
     x = clean_numbers(x)
