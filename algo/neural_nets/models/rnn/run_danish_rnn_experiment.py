@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+import shutil
 
 import numpy as np
 import pandas as pd
@@ -16,11 +17,11 @@ from torchtext import vocab
 from algo.neural_nets.common.preprocessing.danish_preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
-from algo.neural_nets.models.rnn.common.model import RNN
 from algo.neural_nets.models.rnn.args.danish_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, DEV_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, DEV_RESULT_FILE, \
-    DANISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE
+    DANISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER
+from algo.neural_nets.models.rnn.common.model import RNN
 from project_config import SEED, VECTOR_CACHE, DANISH_DATA_PATH, DANISH_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -35,6 +36,8 @@ torch.backends.cudnn.deterministic = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 full = pd.read_csv(DANISH_DATA_PATH, sep='\t')
 test = pd.read_csv(DANISH_TEST_PATH, sep='\t')
@@ -197,6 +200,9 @@ dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t',
 
 test = test[["id", "subtask_a"]]
 test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=False, sep=',', index=False, encoding='utf-8')
+
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
