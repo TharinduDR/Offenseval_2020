@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 import pandas as pd
 import sklearn
@@ -10,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.preprocessing.danish_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.danish_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, danish_args, \
-    DEV_RESULT_FILE, SUBMISSION_FILE
+    DEV_RESULT_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER, RESULT_FILE
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, DANISH_DATA_PATH, DANISH_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
@@ -25,6 +26,8 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 full = pd.read_csv(DANISH_DATA_PATH, sep='\t')
 test = pd.read_csv(DANISH_TEST_PATH, sep='\t')
@@ -45,7 +48,6 @@ dev['text'] = dev['text'].apply(lambda x: transformer_pipeline(x))
 
 test['text'] = test["tweet"]
 test['text'] = test['text'].apply(lambda x: transformer_pipeline(x))
-
 
 model = ClassificationModel(MODEL_TYPE, MODEL_NAME, args=danish_args,
                             use_cuda=torch.cuda.is_available())  # You can set class weights by using the optional weight argument
@@ -99,7 +101,12 @@ if danish_args["evaluate_during_training"]:
 test_predictions, raw_outputs = model.predict(test_sentences)
 
 test['subtask_a'] = le.inverse_transform(test_predictions)
-test = test[['id', 'tweet', 'subtask_a']]
-test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
+test = test[['id', 'subtask_a']]
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER, RESULT_FILE), header=False, sep=',', index=False,
+            encoding='utf-8')
+
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 logging.info("Finished Testing")

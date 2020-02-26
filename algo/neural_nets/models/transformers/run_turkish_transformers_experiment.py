@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 import pandas as pd
 import sklearn
@@ -10,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.preprocessing.danish_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.turkish_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, \
-    DEV_RESULT_FILE
+    DEV_RESULT_FILE, SUBMISSION_FOLDER, RESULT_FILE
 from algo.neural_nets.models.transformers.args.turkish_args import turkish_args, SUBMISSION_FILE
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, TURKISH_DATA_PATH, TURKISH_TEST_PATH
@@ -26,6 +27,8 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 full = pd.read_csv(TURKISH_DATA_PATH, sep='\t')
 test = pd.read_csv(TURKISH_TEST_PATH, sep='\t')
@@ -96,7 +99,12 @@ if turkish_args["evaluate_during_training"]:
 test_predictions, raw_outputs = model.predict(test_sentences)
 
 test['subtask_a'] = le.inverse_transform(test_predictions)
-test = test[['id', 'tweet', 'subtask_a']]
-test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
+test = test[['id', 'subtask_a']]
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER, RESULT_FILE), header=False, sep=',', index=False,
+            encoding='utf-8')
+
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 logging.info("Finished Testing")

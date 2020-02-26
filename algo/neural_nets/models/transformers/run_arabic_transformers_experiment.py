@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 import pandas as pd
 import sklearn
@@ -10,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.preprocessing.arabic_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.arabic_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, \
-    RESULT_FILE, arabic_args, SUBMISSION_FILE
+    RESULT_FILE, arabic_args, SUBMISSION_FILE, DEV_RESULT_FILE, SUBMISSION_FOLDER
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH, ARABIC_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
@@ -25,6 +26,8 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
 dev = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
@@ -76,7 +79,7 @@ dev['predictions'] = dev_predictions
                                                                                                              'label',
                                                                                                              "predictions")
 
-dev.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
@@ -97,7 +100,11 @@ if arabic_args["evaluate_during_training"]:
 test_predictions, raw_outputs = model.predict(test_sentences)
 
 test['subtask_a'] = le.inverse_transform(test_predictions)
-test = test[['id', 'tweet', 'subtask_a']]
-test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+test = test[['id', 'subtask_a']]
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER, RESULT_FILE), header=False, sep=',', index=False,
+            encoding='utf-8')
+
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 logging.info("Finished Testing")
