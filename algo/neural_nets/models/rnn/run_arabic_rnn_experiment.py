@@ -1,13 +1,13 @@
 import logging
 import os
 import random
+import shutil
 
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchtext import data
@@ -16,11 +16,11 @@ from torchtext import vocab
 from algo.neural_nets.common.preprocessing.arabic_preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
-from algo.neural_nets.models.rnn.common.model import RNN
 from algo.neural_nets.models.rnn.args.arabic_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, DEV_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, DEV_RESULT_FILE, \
-    ARABIC_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE
+    ARABIC_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER
+from algo.neural_nets.models.rnn.common.model import RNN
 from project_config import SEED, VECTOR_CACHE, ARABIC_TRAINING_PATH, ARABIC_TEST_PATH, ARABIC_DEV_PATH
 from util.logginghandler import TQDMLoggingHandler
 
@@ -35,6 +35,8 @@ torch.backends.cudnn.deterministic = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
 dev = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
@@ -198,6 +200,8 @@ dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t',
 
 test = test[["id", "subtask_a"]]
 test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=False, sep=',', index=False, encoding='utf-8')
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                     os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))
