@@ -7,6 +7,7 @@ def read_test_tsv(path):
     with open(path, 'rt') as file_in:
         next(file_in)
         for line in file_in:
+            line = line.replace("\n", "")
             components = line.split(sep="\t")
             id.append(components[0])
             tweet.append(components[1])
@@ -24,6 +25,7 @@ def read_train_tsv(path):
     with open(path, 'rt') as file_in:
         next(file_in)
         for line in file_in:
+            line = line.replace("\n", "")
             components = line.split(sep="\t")
             id.append(components[0])
             tweet.append(components[1])
