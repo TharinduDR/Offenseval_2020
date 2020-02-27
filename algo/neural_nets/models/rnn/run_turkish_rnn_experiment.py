@@ -20,7 +20,8 @@ from algo.neural_nets.common.utility import evaluatation_scores, print_model, dr
 from algo.neural_nets.models.rnn.args.danish_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, DEV_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, DEV_RESULT_FILE, \
-    DANISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER
+    DANISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER, \
+    RESULT_FILE
 from algo.neural_nets.models.rnn.common.model import RNN
 from project_config import SEED, VECTOR_CACHE, DANISH_DATA_PATH, DANISH_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
@@ -199,7 +200,7 @@ test["subtask_a"] = le.inverse_transform((test_preds.mean(axis=1) > 0.5).astype(
 dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 test = test[["id", "subtask_a"]]
-test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), header=False, sep=',', index=False, encoding='utf-8')
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER, RESULT_FILE), header=False, sep=',', index=False, encoding='utf-8')
 
 shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
                     os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
