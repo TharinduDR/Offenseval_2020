@@ -2,7 +2,6 @@ import logging
 import os
 import shutil
 
-import pandas as pd
 import sklearn
 import torch
 from sklearn.model_selection import train_test_split
@@ -15,6 +14,7 @@ from algo.neural_nets.models.transformers.args.arabic_args import TEMP_DIRECTORY
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, ARABIC_TRAINING_PATH, ARABIC_DEV_PATH, ARABIC_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
+from util.reader import read_test_tsv, read_train_tsv
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
@@ -29,9 +29,11 @@ if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
     os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
-train = pd.read_csv(ARABIC_TRAINING_PATH, sep='\t')
-dev = pd.read_csv(ARABIC_DEV_PATH, sep='\t')
-test = pd.read_csv(ARABIC_TEST_PATH, sep='\t')
+train = read_train_tsv(ARABIC_TRAINING_PATH)
+dev = read_train_tsv(ARABIC_DEV_PATH)
+test = read_test_tsv(ARABIC_TEST_PATH)
+
+logging.info("Test size {}".format(str(test.shape[0])))
 
 le = LabelEncoder()
 
