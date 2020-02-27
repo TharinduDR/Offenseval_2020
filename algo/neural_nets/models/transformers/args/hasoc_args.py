@@ -3,7 +3,7 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "hasoc_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+RESULT_FILE = "task_a_rnn.csv"
 
 hasoc_args = {
     'output_dir': 'hasoc_temp/outputs/',

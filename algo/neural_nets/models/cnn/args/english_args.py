@@ -1,7 +1,7 @@
 TEMP_DIRECTORY = "english_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+RESULT_FILE = "task_a_rnn.csv"
 MODEL_PATH = "english_temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"
