@@ -3,12 +3,10 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-DEV_RESULT_FILE = "result.tsv"
-SUBMISSION_FOLDER = "results"
-SUBMISSION_FILE = "danish_transfomers"
-RESULT_FILE = "result.csv"
-MODEL_TYPE = "distilbert"
-MODEL_NAME = "distilbert-base-multilingual-cased"
+DEV_RESULT_FILE = "task_a_rnn.csv"
+SUBMISSION_FILE = "task_a_rnn.csv"
+MODEL_TYPE = "bert"
+MODEL_NAME = "bert-base-multilingual-cased"
 
 danish_args = {
     'output_dir': 'danish_temp/outputs/',

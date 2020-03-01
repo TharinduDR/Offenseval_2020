@@ -1,8 +1,12 @@
-TEMP_DIRECTORY = "english_temp/data"
+TEMP_DIRECTORY = "turkish_temp/data"
 TRAIN_FILE = "train.tsv"
+DEV_FILE = "dev.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
-MODEL_PATH = "english_temp"
+DEV_RESULT_FILE = "dev_result.tsv"
+SUBMISSION_FOLDER = "results"
+SUBMISSION_FILE = "turkish_cnn"
+RESULT_FILE = "result.csv"
+MODEL_PATH = "turkish_temp"
 MODEL_NAME = "model.hdfs"
 GRAPH_NAME = "graph.png"
 TURKISH_EMBEDDING_PATH = '/data/fasttext/crawl-300d-2M-subword.vec'
@@ -23,3 +27,4 @@ REDUCE_LEARNING_RATE_THRESHOLD = 1e-6
 REDUCE_LEARNING_RATE_FACTOR = 0.9
 GRADUALLY_UNFREEZE = True
 FREEZE_FOR = 10
+

@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+import shutil
 
 import numpy as np
 import pandas as pd
@@ -16,11 +17,13 @@ from torchtext import vocab
 from algo.neural_nets.common.preprocessing.greek_preprocessing import pipeline
 from algo.neural_nets.common.run_model import threshold_search, predict, fit
 from algo.neural_nets.common.utility import evaluatation_scores, print_model
+from algo.neural_nets.models.cnn.args.greek_args import SUBMISSION_FOLDER, DEV_FILE, TEST_FILE, SUBMISSION_FILE, \
+    RESULT_FILE
 from algo.neural_nets.models.cnn.args.greek_args import SPLIT_RATIO, GREEK_EMBEDDING_PATH, BATCH_SIZE, \
-    MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, TEST_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
-    REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, RESULT_FILE
+    MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, DEV_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
+    REDUCE_LEARNING_RATE_FACTOR, FIXED_LENGTH, N_EPOCHS, MODEL_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, DEV_RESULT_FILE
 from algo.neural_nets.models.cnn.common.model import CNN
-from project_config import SEED, GREEK_DATA_PATH, VECTOR_CACHE
+from project_config import SEED, GREEK_DATA_PATH, VECTOR_CACHE, GREEK_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -34,14 +37,18 @@ torch.backends.cudnn.deterministic = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
+if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
+    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
 full = pd.read_csv(GREEK_DATA_PATH, sep='\t')
+test = pd.read_csv(GREEK_TEST_PATH, sep='\t')
 
 le = LabelEncoder()
 full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
-train, test = train_test_split(full, test_size=0.2, random_state=SEED)
+train, dev = train_test_split(full, test_size=0.2, random_state=SEED)
 
 train.to_csv(os.path.join(TEMP_DIRECTORY, TRAIN_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 test.to_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 id_variable = data.Field()
@@ -55,6 +62,13 @@ train_fields = [
     ('encoded_subtask_a', target_variable)
 ]
 
+dev_fields = [
+    ('id', id_variable),  # we process this as id field
+    ('tweet', text_variable),  # process it as text
+    ('subtask_a', None),  # process it as label
+    ('encoded_subtask_a', None)
+]
+
 test_fields = [
     ('id', id_variable),  # we process this as id field
     ('tweet', text_variable),  # process it as text
@@ -62,12 +76,20 @@ test_fields = [
     ('encoded_subtask_a', None)
 ]
 
+
 # Creating our train and test data
 train_data = data.TabularDataset(
     path=os.path.join(TEMP_DIRECTORY, TRAIN_FILE),
     format='tsv',
     skip_header=True,
     fields=train_fields
+)
+
+dev_data = data.TabularDataset(
+    path=os.path.join(TEMP_DIRECTORY, DEV_FILE),
+    format='tsv',
+    skip_header=True,
+    fields=dev_fields
 )
 
 test_data = data.TabularDataset(
@@ -79,7 +101,9 @@ test_data = data.TabularDataset(
 
 vec = vocab.Vectors(GREEK_EMBEDDING_PATH, cache=VECTOR_CACHE)
 
+dev_preds = np.zeros((len(dev_data), N_FOLD))
 test_preds = np.zeros((len(test_data), N_FOLD))
+
 deltas = []
 
 for i in range(N_FOLD):
@@ -89,13 +113,13 @@ for i in range(N_FOLD):
 
     logging.info(f'Number of training examples: {len(train_data)}')
     logging.info(f'Number of validation examples: {len(valid_data)}')
-    logging.info(f'Number of test examples: {len(test_data)}')
+    logging.info(f'Number of test examples: {len(dev_data)}')
 
     # Build the vocabulary using only the train dataset?,
     # and also by specifying the pretrained embedding
     text_variable.build_vocab(train_data, vectors=vec, max_size=None)
     target_variable.build_vocab(train_data)
-    id_variable.build_vocab(test_data)
+    id_variable.build_vocab(dev_data)
 
     logging.info(f'Unique tokens in TEXT vocab: {len(text_variable.vocab)}')
     logging.info(f'Unique tokens in TARGET vocab: {len(target_variable.vocab)}')
@@ -110,6 +134,15 @@ for i in range(N_FOLD):
     )
 
     # Don't want to shuffle test data, so use a standard iterator
+    dev_iter = data.Iterator(
+        dev_data,
+        batch_size=BATCH_SIZE,
+        device=device,
+        train=False,
+        sort=False,
+        sort_within_batch=False
+    )
+
     test_iter = data.Iterator(
         test_data,
         batch_size=BATCH_SIZE,
@@ -144,18 +177,33 @@ for i in range(N_FOLD):
                                                       N_EPOCHS, os.path.join(path, MODEL_NAME), GRADUALLY_UNFREEZE, FREEZE_FOR)
 
     delta = threshold_search(trained_model, valid_iter)
-    test_pred, test_id = predict(trained_model, test_iter)
+    dev_pred = predict(trained_model, dev_iter)
+    test_pred = predict(trained_model, test_iter)
+
+    dev_preds[:, i] = (np.array(dev_pred) >= delta).astype(int)
     test_preds[:, i] = (np.array(test_pred) >= delta).astype(int)
 
+dev = pd.read_csv(os.path.join(TEMP_DIRECTORY, DEV_FILE), sep='\t')
+dev["predictions"] = (dev_preds.mean(axis=1) > 0.5).astype(int)
+
 test = pd.read_csv(os.path.join(TEMP_DIRECTORY, TEST_FILE), sep='\t')
-test["predictions"] = (test_preds.mean(axis=1) > 0.5).astype(int)
+test["subtask_a"] = le.inverse_transform((test_preds.mean(axis=1) > 0.5).astype(int))
 
 # Performing the evaluation
-(tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(test,
+(tn, fp, fn, tp), accuracy, weighted_f1, macro_f1, weighted_recall, weighted_precision = evaluatation_scores(dev,
                                                                                                    'encoded_subtask_a',
                                                                                                    "predictions")
 
-test.to_csv(os.path.join(TEMP_DIRECTORY, RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
+dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
+
+test = test[["id", "subtask_a"]]
+test.to_csv(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER, RESULT_FILE), header=False, sep=',', index=False, encoding='utf-8')
+
+shutil.make_archive(os.path.join(TEMP_DIRECTORY, SUBMISSION_FILE), 'zip',
+                    os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
+
+dev.to_csv(os.path.join(TEMP_DIRECTORY, DEV_RESULT_FILE), header=True, sep='\t', index=False, encoding='utf-8')
 
 logging.info("Confusion Matrix (tn, fp, fn, tp) {} {} {} {}".format(tn, fp, fn, tp))
 logging.info("Accuracy {}".format(accuracy))

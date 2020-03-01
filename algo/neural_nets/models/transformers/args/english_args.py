@@ -3,7 +3,7 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "result.tsv"
+RESULT_FILE = "task_a_rnn.csv"
 MODEL_TYPE = "xlnet"
 MODEL_NAME = "xlnet-large-cased"
 HASOC_TRANSFER_LEARNING = False
