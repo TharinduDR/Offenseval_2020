@@ -42,6 +42,7 @@ This folder includes the different experiments we did with Transformers for Offe
 | ---------------------------------------------------------------------------|----------:| -----------:| --------:| --------------:| -----------------:| ----------------:|
 | bert-multilingual-cased                                                    | 0.8377    | 0.8255      | 0.7054   | 0.8377         |  0.8225           | 4717 701 314 524 |
 | distilbert-multilingual-cased                                              |           |             |          |                |                   |                  |
+| dbmdz/bert-base-turkish-cased                                              | 0.8843    | 0.8769      | 0.7938   | 0.8843         |  0.8778           | 4838 531 193 694 |
 
 #### Arabic Experiments
 
