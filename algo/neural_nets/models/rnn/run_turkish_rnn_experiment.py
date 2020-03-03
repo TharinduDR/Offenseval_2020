@@ -17,13 +17,13 @@ from torchtext import vocab
 from algo.neural_nets.common.preprocessing.danish_preprocessing import pipeline
 from algo.neural_nets.common.run_model import fit, predict, threshold_search
 from algo.neural_nets.common.utility import evaluatation_scores, print_model, draw_graph
-from algo.neural_nets.models.rnn.args.danish_args import SPLIT_RATIO, BATCH_SIZE, \
+from algo.neural_nets.models.rnn.args.turkish_args import SPLIT_RATIO, BATCH_SIZE, \
     N_EPOCHS, MODEL_PATH, TEMP_DIRECTORY, TRAIN_FILE, DEV_FILE, N_FOLD, LEARNING_RATE, REDUCE_LEARNING_RATE_THRESHOLD, \
     REDUCE_LEARNING_RATE_FACTOR, MODEL_NAME, GRAPH_NAME, GRADUALLY_UNFREEZE, FREEZE_FOR, DEV_RESULT_FILE, \
-    DANISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER, \
+    TURKISH_EMBEDDING_PATH, HIDDEN_DIM, BIDIRECTIONAL, N_LAYERS, DROPOUT, TEST_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER, \
     RESULT_FILE
 from algo.neural_nets.models.rnn.common.model import RNN
-from project_config import SEED, VECTOR_CACHE, DANISH_DATA_PATH, DANISH_TEST_PATH
+from project_config import SEED, VECTOR_CACHE, DANISH_DATA_PATH, DANISH_TEST_PATH, TURKISH_DATA_PATH, TURKISH_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -40,8 +40,8 @@ if not os.path.exists(TEMP_DIRECTORY): os.makedirs(TEMP_DIRECTORY)
 if not os.path.exists(os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER)): os.makedirs(
     os.path.join(TEMP_DIRECTORY, SUBMISSION_FOLDER))
 
-full = pd.read_csv(DANISH_DATA_PATH, sep='\t')
-test = pd.read_csv(DANISH_TEST_PATH, sep='\t')
+full = pd.read_csv(TURKISH_DATA_PATH, sep='\t')
+test = pd.read_csv(TURKISH_TEST_PATH, sep='\t')
 
 le = LabelEncoder()
 full['encoded_subtask_a'] = le.fit_transform(full["subtask_a"])
@@ -98,7 +98,7 @@ test_data = data.TabularDataset(
     fields=dev_fields
 )
 
-vec = vocab.Vectors(DANISH_EMBEDDING_PATH, cache=VECTOR_CACHE)
+vec = vocab.Vectors(TURKISH_EMBEDDING_PATH, cache=VECTOR_CACHE)
 
 dev_preds = np.zeros((len(dev_data), N_FOLD))
 test_preds = np.zeros((len(test_data), N_FOLD))
