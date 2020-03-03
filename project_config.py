@@ -1,5 +1,6 @@
 SEED = 77
 ENGLISH_DATA_PATH = "../../../../data/English/olid-training-v1.0.tsv"
+ENGLISH_TEST_PATH = "../../../../data/English/test_a_tweets.tsv"
 HASOC_DATA_PATH = "../../../../data/HASOC/english_dataset.tsv"
 SUPPORT_ENGLISH_DATA_PATH = "../../../../data/English/task_a_distant.tsv"
 DANISH_DATA_PATH = "../../../../data/Danish/offenseval-da-training-v1.tsv"

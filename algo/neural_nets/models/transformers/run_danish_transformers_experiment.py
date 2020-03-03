@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from algo.neural_nets.common.preprocessing.danish_preprocessing import transformer_pipeline
 from algo.neural_nets.common.utility import evaluatation_scores
 from algo.neural_nets.models.transformers.args.danish_args import TEMP_DIRECTORY, MODEL_TYPE, MODEL_NAME, danish_args, \
-    DEV_RESULT_FILE, SUBMISSION_FILE, SUBMISSION_FOLDER, RESULT_FILE
+    DEV_RESULT_FILE, SUBMISSION_FILE, RESULT_FILE, SUBMISSION_FOLDER
 from algo.neural_nets.models.transformers.common.run_model import ClassificationModel
 from project_config import SEED, DANISH_DATA_PATH, DANISH_TEST_PATH
 from util.logginghandler import TQDMLoggingHandler

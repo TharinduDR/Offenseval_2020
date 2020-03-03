@@ -3,8 +3,10 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "arabic_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "dev_result.tsv"
-SUBMISSION_FILE = "task_a_rnn.csv"
+DEV_RESULT_FILE = "dev_result.tsv"
+RESULT_FILE = "result.csv"
+SUBMISSION_FOLDER = "arabic_transformers"
+SUBMISSION_FILE = "arabic_transformers"
 MODEL_TYPE = "distilbert"
 MODEL_NAME = "distilbert-base-multilingual-cased"
 

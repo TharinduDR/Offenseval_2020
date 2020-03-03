@@ -1,11 +1,14 @@
 from multiprocessing import cpu_count
 
-TEMP_DIRECTORY = "temp/data"
+TEMP_DIRECTORY = "english_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-RESULT_FILE = "task_a_rnn.csv"
-MODEL_TYPE = "xlnet"
-MODEL_NAME = "xlnet-large-cased"
+DEV_RESULT_FILE = "dev_result.tsv"
+RESULT_FILE = "result.csv"
+SUBMISSION_FOLDER = "english_transformers"
+SUBMISSION_FILE = "english_transformers"
+MODEL_TYPE = "bert"
+MODEL_NAME = "bert-base-cased"
 HASOC_TRANSFER_LEARNING = False
 USE_DISTANT_LEARNING = False
 

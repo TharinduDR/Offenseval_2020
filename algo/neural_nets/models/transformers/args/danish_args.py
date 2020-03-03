@@ -3,8 +3,10 @@ from multiprocessing import cpu_count
 TEMP_DIRECTORY = "danish_temp/data"
 TRAIN_FILE = "train.tsv"
 TEST_FILE = "test.tsv"
-DEV_RESULT_FILE = "task_a_rnn.csv"
-SUBMISSION_FILE = "task_a_rnn.csv"
+DEV_RESULT_FILE = "dev_result.tsv"
+RESULT_FILE = "result.csv"
+SUBMISSION_FOLDER = "danish_transformers"
+SUBMISSION_FILE = "danish_transformers"
 MODEL_TYPE = "bert"
 MODEL_NAME = "bert-base-multilingual-cased"
 
@@ -21,7 +23,7 @@ danish_args = {
     'eval_batch_size': 8,
     'num_train_epochs': 3,
     'weight_decay': 0,
-    'learning_rate': 4e-5,
+    'learning_rate': 2e-5,
     'adam_epsilon': 1e-8,
     'warmup_ratio': 0.06,
     'warmup_steps': 0,
